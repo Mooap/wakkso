@@ -1,0 +1,1039 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  body { margin:0; background:#080d11; color:#d5e5e0; -webkit-font-smoothing:antialiased; overflow-x:hidden; }
+  a { color:#7ef0b2; text-decoration:none; }
+  a:hover { color:#c9ffe2; }
+  ::selection { background:#7ef0b2; color:#05090c; }
+  html { scroll-behavior:smooth; }
+  @keyframes lz-marquee { from { transform:translateX(0); } to { transform:translateX(-50%); } }
+  @keyframes lz-hotbar { from { transform:scaleY(.55); } to { transform:scaleY(1.15); } }
+  @keyframes lz-coldbar { from { transform:scaleY(.96); } to { transform:scaleY(1.04); } }
+  @keyframes lz-blink { 0%,45% { opacity:1; } 50%,95% { opacity:.15; } 100% { opacity:1; } }
+  @keyframes lz-float { from { transform:translateY(-8px); } to { transform:translateY(8px); } }
+  @keyframes lz-scan { from { transform:translateY(-120%); } to { transform:translateY(1200%); } }
+  @keyframes lz-breathe { 0%,100% { opacity:.35; transform:scale(1); } 50% { opacity:.75; transform:scale(1.06); } }
+  @keyframes lz-dot { 0%,100% { opacity:.25; transform:scale(.8); } 50% { opacity:1; transform:scale(1.35); } }
+  @keyframes lz-drop { from { transform:translateY(0); opacity:0; } 12% { opacity:1; } to { transform:translateY(70px); opacity:0; } }
+  @keyframes lz-shimmer { 0% { transform:translateY(10px) scaleY(.5); opacity:0; } 25% { opacity:.75; } 100% { transform:translateY(-110px) scaleY(1.5); opacity:0; } }
+  @keyframes lz-sway { 0%,100% { transform:translateY(0); } 50% { transform:translateY(-6px); } }
+  @media (max-width: 1180px) {
+    #top { grid-template-columns:1fr !important; padding-top:132px !important; }
+    #dc-root header nav { display:none !important; }
+    #lz-spec-grid, #lz-rock-grid { grid-template-columns:1fr !important; }
+    #lz-lex-grid, #lz-molt-grid, #lz-supply-grid { grid-template-columns:repeat(2,1fr) !important; }
+    #lz-diag-grid { grid-template-columns:repeat(2,1fr) !important; }
+    #lz-hero-caption { flex-direction:column !important; align-items:flex-start !important; gap:10px; }
+    #lz-hero-caption > div:last-child { text-align:left !important; }
+  }
+  @media (max-width: 860px) {
+    #lz-menu-panel, #lz-over-panel { gap:10px !important; padding:16px !important; }
+    #lz-menu-panel h3 { font-size:clamp(32px,9vw,54px) !important; }
+    #lz-menu-panel p, #lz-over-panel p { font-size:11px !important; line-height:1.65 !important; }
+    #lz-menu-panel > div:first-of-type { display:none !important; }
+    #lz-ledger { max-height:116px; }
+  }
+  @media (max-width: 760px) {
+    #lz-lex-grid, #lz-molt-grid, #lz-supply-grid, #lz-code-grid, #lz-diag-grid, #lz-sheet-grid { grid-template-columns:1fr !important; }
+  }
+  @media (max-width: 620px) {
+    #dc-root header { padding:10px 16px !important; gap:12px !important; }
+    #dc-root header > a:first-child span { font-size:18px !important; }
+    #dc-root header > div:nth-of-type(2) { padding:6px 9px !important; gap:7px !important; }
+    #dc-root header > div:nth-of-type(2) > span:nth-child(1),
+    #dc-root header > div:nth-of-type(2) > span:nth-child(3) { display:none !important; }
+    #dc-root header > a:last-child { padding:8px 12px !important; font-size:11px !important; letter-spacing:.06em !important; }
+    #dc-root section, #dc-root footer { padding-left:20px !important; padding-right:20px !important; }
+    #top { padding-top:112px !important; }
+    #dc-root h2 { font-size:clamp(34px,10vw,52px) !important; }
+    #lz-stage { min-height:0 !important; }
+  }
+</style>
+</helmet>
+
+<div style="position:relative; background:#080d11; font-family:'IBM Plex Mono',ui-monospace,monospace; overflow:hidden;">
+
+  <div style="position:fixed; inset:0; pointer-events:none; z-index:1; background-image:linear-gradient(rgba(126,240,178,.045) 1px, transparent 1px), linear-gradient(90deg, rgba(126,240,178,.045) 1px, transparent 1px); background-size:64px 64px; mask-image:radial-gradient(ellipse 90% 70% at 50% 30%, #000 20%, transparent 80%);"></div>
+
+  <header style="position:fixed; top:0; left:0; right:0; z-index:40; display:flex; align-items:center; gap:24px; padding:14px 28px; background:rgba(8,13,17,.78); backdrop-filter:blur(14px); border-bottom:1px solid rgba(126,240,178,.13);">
+    <a href="#top" style="display:flex; align-items:center; gap:10px;">
+      <img src="img/pfp.jpg" alt="" style="width:32px; height:32px; border-radius:8px; object-fit:cover; border:1px solid rgba(126,240,178,.3);" />
+      <span style="font-family:Anton,sans-serif; font-size:22px; letter-spacing:.04em; color:#eafff4;">$LIZARD</span>
+    </a>
+    <nav style="display:flex; align-items:center; gap:10px; margin-left:18px; flex-wrap:nowrap; white-space:nowrap; min-width:0; overflow:hidden;">
+      <a href="#problem" style="font-size:11px; letter-spacing:.16em; color:#7ef0b2;" style-hover="color:#c9ffe2;">HOT BLOOD</a>
+      <span style="font-size:11px; color:rgba(126,240,178,.4);">/</span>
+      <a href="#specimen" style="font-size:11px; letter-spacing:.16em; color:#7ef0b2;" style-hover="color:#c9ffe2;">SPECIMEN</a>
+      <span style="font-size:11px; color:rgba(126,240,178,.4);">/</span>
+      <a href="#rock" style="font-size:11px; letter-spacing:.16em; color:#7ef0b2;" style-hover="color:#c9ffe2;">THE ROCK</a>
+      <span style="font-size:11px; color:rgba(126,240,178,.4);">/</span>
+      <a href="#lexicon" style="font-size:11px; letter-spacing:.16em; color:#7ef0b2;" style-hover="color:#c9ffe2;">LEXICON</a>
+      <span style="font-size:11px; color:rgba(126,240,178,.4);">/</span>
+      <a href="#supply" style="font-size:11px; letter-spacing:.16em; color:#7ef0b2;" style-hover="color:#c9ffe2;">SUPPLY</a>
+      <span style="font-size:11px; color:rgba(126,240,178,.4);">/</span>
+      <a href="#molt" style="font-size:11px; letter-spacing:.16em; color:#7ef0b2;" style-hover="color:#c9ffe2;">MOLT</a>
+    </nav>
+    <div style="flex:1;"></div>
+    <div style="display:flex; align-items:center; gap:10px; padding:7px 12px; border:1px solid rgba(126,240,178,.18); border-radius:6px; background:rgba(126,240,178,.04);">
+      <span style="font-size:9px; letter-spacing:.2em; color:#6f8a83;">AMBIENT</span>
+      <span style="font-size:16px; font-weight:700; font-variant-numeric:tabular-nums; color: {{ ambientColor }};">{{ ambientText }}</span>
+      <span style="width:52px; height:5px; border-radius:3px; background:rgba(255,255,255,.09); overflow:hidden;">
+        <span style="display:block; height:100%; width: {{ ambientPct }}%; background: {{ ambientColor }}; transition:width .6s ease;"></span>
+      </span>
+      <span style="font-size:9px; letter-spacing:.18em; color: {{ ambientColor }};">{{ ambientStatus }}</span>
+    </div>
+    <a href="#rock" style="padding:9px 18px; border-radius:6px; background:#7ef0b2; color:#05110b; font-size:12px; font-weight:700; letter-spacing:.12em;" style-hover="background:#c9ffe2;">BUY $LIZARD</a>
+  </header>
+
+  <section id="top" style="position:relative; z-index:2; min-height:100vh; display:grid; grid-template-columns:1.05fr .95fr; gap:40px; align-items:center; padding:132px 48px 80px; max-width:1500px; margin:0 auto;">
+    <div style="position:absolute; top:8%; left:-12%; width:640px; height:640px; border-radius:50%; background:radial-gradient(circle, rgba(95,216,255,.14), transparent 65%); filter:blur(20px); pointer-events:none;"></div>
+    <div>
+      <div style="display:inline-flex; align-items:center; gap:9px; padding:6px 12px; border:1px solid rgba(126,240,178,.22); border-radius:100px; margin-bottom:26px;">
+        <span style="width:6px; height:6px; border-radius:50%; background:#7ef0b2; animation:lz-dot 1.6s ease-in-out infinite;"></span>
+        <span style="font-size:10px; letter-spacing:.24em; color:#8fa8a1;">FIELD DOSSIER // SPECIMEN 001 // CLASS: REPTILIA</span>
+      </div>
+      <h1 style="font-family:Anton,sans-serif; font-size:clamp(74px,10vw,164px); line-height:.84; margin:0; letter-spacing:-.01em; color:#eafff4; text-shadow:0 0 60px rgba(126,240,178,.22);">$LIZARD</h1>
+      <p style="font-size:clamp(15px,1.5vw,20px); letter-spacing:.28em; color:#7ef0b2; margin:18px 0 0;">THE COLD-BLOODED MEMECOIN</p>
+      <p style="max-width:520px; font-size:15px; line-height:1.75; color:#93a8a3; margin:24px 0 0; text-wrap:pretty;">Every meme asset in the market runs on hot blood. Dogs. Cats. Rodents. Frogs in mammalian suits. Metabolically expensive, emotionally volatile, structurally fragile. The entire cold-blooded category is vacant. That is the gap. That's where $LIZARD rises.</p>
+      <div style="display:flex; gap:12px; margin-top:34px; flex-wrap:wrap;">
+        <a href="#rock" style="padding:15px 28px; border-radius:8px; background:#7ef0b2; color:#05110b; font-size:13px; font-weight:700; letter-spacing:.14em;" style-hover="background:#c9ffe2; transform:translateY(-2px);">STEP ONTO THE ROCK</a>
+        <a href="https://t.me/thelizardloungebonk" target="_blank" rel="noreferrer" style="padding:15px 28px; border-radius:8px; border:1px solid rgba(126,240,178,.28); color:#d5e5e0; font-size:13px; font-weight:600; letter-spacing:.14em;" style-hover="border-color:#7ef0b2; background:rgba(126,240,178,.06);">THE LIZARD LOUNGE</a>
+        <a href="https://x.com/lizardonbonk" target="_blank" rel="noreferrer" style="padding:15px 28px; border-radius:8px; border:1px solid rgba(126,240,178,.28); color:#d5e5e0; font-size:13px; font-weight:600; letter-spacing:.14em;" style-hover="border-color:#7ef0b2; background:rgba(126,240,178,.06);">@LIZARDONBONK</a>
+      </div>
+      <div onClick="{{ onCopy }}" style="display:flex; align-items:center; gap:14px; margin-top:26px; padding:13px 16px; border:1px dashed rgba(126,240,178,.24); border-radius:8px; cursor:pointer; max-width:620px;" style-hover="border-color:#7ef0b2; background:rgba(126,240,178,.04);">
+        <span style="font-size:9px; letter-spacing:.2em; color:#6f8a83; white-space:nowrap;">CA // SOLANA</span>
+        <span style="flex:1; font-size:12px; color:#c6dcd5; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">{{ ca }}</span>
+        <span style="font-size:10px; font-weight:700; letter-spacing:.16em; color:#7ef0b2;">{{ copyLabel }}</span>
+      </div>
+    </div>
+
+    <div onMouseMove="{{ onLens }}" onMouseLeave="{{ offLens }}" ref="{{ lensRef }}" style="position:relative; border:1px solid rgba(126,240,178,.16); border-radius:14px; overflow:hidden; background:#0a1218; cursor:crosshair;">
+      <img src="img/meditating.png" alt="Lizard meditating on the heat rock" style="display:block; width:100%; height:auto;" />
+      <img src="img/meditating.png" alt="" aria-hidden="true" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; filter:contrast(1.7) grayscale(1) sepia(1) saturate(7) hue-rotate(-32deg) brightness(1.05); clip-path: {{ lensClip }}; opacity: {{ lensOn }}; pointer-events:none;" />
+      <div style="position:absolute; inset:0; pointer-events:none; background:linear-gradient(180deg, rgba(8,13,17,.35) 0%, transparent 30%, transparent 62%, rgba(8,13,17,.92) 100%);"></div>
+      <div style="position:absolute; left:0; right:0; height:2px; background:linear-gradient(90deg, transparent, rgba(126,240,178,.55), transparent); animation:lz-scan 6s linear infinite; pointer-events:none;"></div>
+      <div style="position:absolute; width:220px; height:220px; margin:-110px 0 0 -110px; border:1px solid rgba(255,170,80,.75); border-radius:50%; box-shadow:0 0 40px rgba(255,150,60,.35) inset; pointer-events:none; left: {{ lensPx }}px; top: {{ lensPy }}px; opacity: {{ lensOn }};"></div>
+      <div style="position:absolute; top:14px; left:14px; right:14px; display:flex; gap:8px; align-items:center; pointer-events:none;">
+        <span style="padding:4px 9px; background:rgba(8,13,17,.72); border:1px solid rgba(126,240,178,.2); border-radius:4px; font-size:9px; letter-spacing:.18em; color:#7ef0b2; white-space:nowrap;">THERMAL PROBE // ACTIVE</span>
+        <span style="flex:none; width:7px; height:7px; border-radius:50%; background:#ff6b4d; animation:lz-blink 1.4s steps(1) infinite;"></span>
+      </div>
+      <div id="lz-hero-caption" style="position:absolute; bottom:16px; left:16px; right:16px; display:flex; flex-wrap:wrap; gap:12px; justify-content:space-between; align-items:flex-end; pointer-events:none;">
+        <div>
+          <div style="font-size:9px; letter-spacing:.2em; color:#6f8a83;">SURFACE TEMP</div>
+          <div style="font-family:Anton,sans-serif; font-size:34px; line-height:1; color: {{ surfaceColor }};">{{ surfaceTemp }}</div>
+        </div>
+        <div style="text-align:right; font-size:9px; letter-spacing:.18em; color:#7f958f;">
+          <div>PARIETAL EYE</div>
+          <div>SUPER REFLEX</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div style="position:relative; z-index:3; border-top:1px solid rgba(126,240,178,.14); border-bottom:1px solid rgba(126,240,178,.14); background:rgba(126,240,178,.035); overflow:hidden; padding:11px 0;">
+    <div style="display:flex; width:max-content; animation:lz-marquee 32s linear infinite; gap:0;">
+      <span style="display:flex; gap:44px; padding-right:44px; font-size:12px; letter-spacing:.24em; color:#8fbfae; white-space:nowrap;">
+        <span>[ COLD BLOOD, RAZOR OPTICS ]</span><span>[ ZERO EXERTION, MAXIMUM ENDURANCE ]</span><span>[ MAMMALS PANIC. LIZARD CALCULATES. ]</span><span>[ ABSOLUTE KINETIC STILLNESS ]</span><span>[ CALCULATED PREDATORY PATIENCE ]</span><span>[ THE LIZARD WILL ALWAYS REMAIN ]</span>
+      </span>
+      <span style="display:flex; gap:44px; padding-right:44px; font-size:12px; letter-spacing:.24em; color:#8fbfae; white-space:nowrap;">
+        <span>[ COLD BLOOD, RAZOR OPTICS ]</span><span>[ ZERO EXERTION, MAXIMUM ENDURANCE ]</span><span>[ MAMMALS PANIC. LIZARD CALCULATES. ]</span><span>[ ABSOLUTE KINETIC STILLNESS ]</span><span>[ CALCULATED PREDATORY PATIENCE ]</span><span>[ THE LIZARD WILL ALWAYS REMAIN ]</span>
+      </span>
+    </div>
+  </div>
+
+  <section id="problem" style="position:relative; z-index:2; max-width:1400px; margin:0 auto; padding:120px 48px;">
+    <div style="display:flex; align-items:baseline; gap:16px; margin-bottom:14px;">
+      <span style="font-size:10px; letter-spacing:.24em; color:#6f8a83;">SEC / 01</span>
+      <span style="flex:1; height:1px; background:rgba(126,240,178,.16);"></span>
+      <span style="font-size:10px; letter-spacing:.24em; color:#6f8a83;">AMBIENT TEMP 34°C</span>
+    </div>
+    <h2 style="font-family:Anton,sans-serif; font-size:clamp(42px,6vw,86px); line-height:.94; margin:0 0 20px; color:#eafff4;">THE PROBLEM WITH HOT BLOOD</h2>
+    <p style="max-width:760px; font-size:15px; line-height:1.8; color:#93a8a3; margin:0 0 56px; text-wrap:pretty;">Hot-blooded mammalian tokens burn continuous caloric input just to exist: non-stop KOL buy-ins, unrelenting retail hype, timeline noise on a drip feed. If the feed goes quiet for 48 hours, holders panic and the chart collapses. If the marketing wallet empties, the project evaporates. A perpetual state of metabolic panic.</p>
+
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">
+      <div style="border:1px solid rgba(255,120,80,.22); border-radius:14px; padding:26px; background:linear-gradient(180deg, rgba(255,120,80,.07), rgba(255,120,80,.01));">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+          <span style="font-size:11px; letter-spacing:.2em; color:#ff9a72; font-weight:700;">HOT-BLOODED ASSET</span>
+          <span style="font-size:10px; letter-spacing:.16em; color:#ff6b4d;">BURN RATE: CRITICAL</span>
+        </div>
+        <div style="font-size:11px; color:#a08078; margin-bottom:22px;">FIG. 01 — metabolic expenditure across one market cycle</div>
+        <div style="display:flex; align-items:flex-end; gap:5px; height:170px;">
+          <div style="flex:1; height:38%; transform-origin:bottom; background:linear-gradient(180deg,#ff9a52,#ff3b2f); border-radius:2px; animation:lz-hotbar 1.1s ease-in-out infinite alternate; animation-delay:0s;"></div>
+          <div style="flex:1; height:62%; transform-origin:bottom; background:linear-gradient(180deg,#ff9a52,#ff3b2f); border-radius:2px; animation:lz-hotbar .9s ease-in-out infinite alternate; animation-delay:.12s;"></div>
+          <div style="flex:1; height:47%; transform-origin:bottom; background:linear-gradient(180deg,#ff9a52,#ff3b2f); border-radius:2px; animation:lz-hotbar 1.3s ease-in-out infinite alternate; animation-delay:.05s;"></div>
+          <div style="flex:1; height:78%; transform-origin:bottom; background:linear-gradient(180deg,#ff9a52,#ff3b2f); border-radius:2px; animation:lz-hotbar 1s ease-in-out infinite alternate; animation-delay:.28s;"></div>
+          <div style="flex:1; height:55%; transform-origin:bottom; background:linear-gradient(180deg,#ff9a52,#ff3b2f); border-radius:2px; animation:lz-hotbar 1.2s ease-in-out infinite alternate; animation-delay:.4s;"></div>
+          <div style="flex:1; height:92%; transform-origin:bottom; background:linear-gradient(180deg,#ff9a52,#ff3b2f); border-radius:2px; animation:lz-hotbar .85s ease-in-out infinite alternate; animation-delay:.16s;"></div>
+          <div style="flex:1; height:70%; transform-origin:bottom; background:linear-gradient(180deg,#ff9a52,#ff3b2f); border-radius:2px; animation:lz-hotbar 1.15s ease-in-out infinite alternate; animation-delay:.33s;"></div>
+          <div style="flex:1; height:100%; transform-origin:bottom; background:linear-gradient(180deg,#ffb066,#ff2f1f); border-radius:2px; animation:lz-hotbar .75s ease-in-out infinite alternate; animation-delay:.08s;"></div>
+          <div style="flex:1; height:64%; transform-origin:bottom; background:linear-gradient(180deg,#ff9a52,#ff3b2f); border-radius:2px; animation:lz-hotbar 1.05s ease-in-out infinite alternate; animation-delay:.22s;"></div>
+          <div style="flex:1; height:41%; transform-origin:bottom; background:linear-gradient(180deg,#ff9a52,#ff3b2f); border-radius:2px; animation:lz-hotbar 1.25s ease-in-out infinite alternate; animation-delay:.44s;"></div>
+          <div style="flex:1; height:26%; transform-origin:bottom; background:linear-gradient(180deg,#c96a44,#7a2a20); border-radius:2px; animation:lz-hotbar 1.4s ease-in-out infinite alternate; animation-delay:.1s;"></div>
+          <div style="flex:1; height:14%; transform-origin:bottom; background:linear-gradient(180deg,#8a4a34,#4a1a14); border-radius:2px;"></div>
+          <div style="flex:1; height:7%; transform-origin:bottom; background:#3d1712; border-radius:2px;"></div>
+          <div style="flex:1; height:4%; transform-origin:bottom; background:#301210; border-radius:2px;"></div>
+        </div>
+        <div style="margin-top:14px; font-size:11px; letter-spacing:.14em; color:#ff8f6b;">PROGNOSIS — ENERGY DEPLETION. CHART COLLAPSE.</div>
+      </div>
+
+      <div style="border:1px solid rgba(126,240,178,.2); border-radius:14px; padding:26px; background:linear-gradient(180deg, rgba(126,240,178,.06), rgba(126,240,178,.01));">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+          <span style="font-size:11px; letter-spacing:.2em; color:#7ef0b2; font-weight:700;">$LIZARD — ECTOTHERMIC</span>
+          <span style="font-size:10px; letter-spacing:.16em; color:#5fd8ff;">BURN RATE: ~0</span>
+        </div>
+        <div style="font-size:11px; color:#6f8a83; margin-bottom:22px;">near-zero baseline metabolic cost. stillness is free.</div>
+        <div style="display:flex; align-items:flex-end; gap:5px; height:170px;">
+          <div style="flex:1; height:11%; transform-origin:bottom; background:linear-gradient(180deg,#7ef0b2,#2e8f74); border-radius:2px; animation:lz-coldbar 4s ease-in-out infinite alternate; animation-delay:0s;"></div>
+          <div style="flex:1; height:12%; transform-origin:bottom; background:linear-gradient(180deg,#7ef0b2,#2e8f74); border-radius:2px; animation:lz-coldbar 4.4s ease-in-out infinite alternate; animation-delay:.2s;"></div>
+          <div style="flex:1; height:11%; transform-origin:bottom; background:linear-gradient(180deg,#7ef0b2,#2e8f74); border-radius:2px; animation:lz-coldbar 3.8s ease-in-out infinite alternate; animation-delay:.4s;"></div>
+          <div style="flex:1; height:13%; transform-origin:bottom; background:linear-gradient(180deg,#7ef0b2,#2e8f74); border-radius:2px; animation:lz-coldbar 4.2s ease-in-out infinite alternate; animation-delay:.6s;"></div>
+          <div style="flex:1; height:11%; transform-origin:bottom; background:linear-gradient(180deg,#7ef0b2,#2e8f74); border-radius:2px; animation:lz-coldbar 4.6s ease-in-out infinite alternate; animation-delay:.8s;"></div>
+          <div style="flex:1; height:12%; transform-origin:bottom; background:linear-gradient(180deg,#7ef0b2,#2e8f74); border-radius:2px; animation:lz-coldbar 4s ease-in-out infinite alternate; animation-delay:1s;"></div>
+          <div style="flex:1; height:11%; transform-origin:bottom; background:linear-gradient(180deg,#7ef0b2,#2e8f74); border-radius:2px; animation:lz-coldbar 4.3s ease-in-out infinite alternate; animation-delay:1.2s;"></div>
+          <div style="flex:1; height:12%; transform-origin:bottom; background:linear-gradient(180deg,#7ef0b2,#2e8f74); border-radius:2px; animation:lz-coldbar 3.9s ease-in-out infinite alternate; animation-delay:1.4s;"></div>
+          <div style="flex:1; height:11%; transform-origin:bottom; background:linear-gradient(180deg,#7ef0b2,#2e8f74); border-radius:2px; animation:lz-coldbar 4.5s ease-in-out infinite alternate; animation-delay:1.6s;"></div>
+          <div style="flex:1; height:12%; transform-origin:bottom; background:linear-gradient(180deg,#7ef0b2,#2e8f74); border-radius:2px; animation:lz-coldbar 4.1s ease-in-out infinite alternate; animation-delay:1.8s;"></div>
+          <div style="flex:1; height:11%; transform-origin:bottom; background:linear-gradient(180deg,#7ef0b2,#2e8f74); border-radius:2px; animation:lz-coldbar 4.4s ease-in-out infinite alternate; animation-delay:2s;"></div>
+          <div style="flex:1; height:12%; transform-origin:bottom; background:linear-gradient(180deg,#7ef0b2,#2e8f74); border-radius:2px; animation:lz-coldbar 4s ease-in-out infinite alternate; animation-delay:2.2s;"></div>
+          <div style="flex:1; height:11%; transform-origin:bottom; background:linear-gradient(180deg,#7ef0b2,#2e8f74); border-radius:2px; animation:lz-coldbar 4.2s ease-in-out infinite alternate; animation-delay:2.4s;"></div>
+          <div style="flex:1; height:12%; transform-origin:bottom; background:linear-gradient(180deg,#7ef0b2,#2e8f74); border-radius:2px; animation:lz-coldbar 4.6s ease-in-out infinite alternate; animation-delay:2.6s;"></div>
+        </div>
+        <div style="margin-top:14px; font-size:11px; letter-spacing:.14em; color:#7ef0b2;">PROGNOSIS — UNBROKEN LINEAGE. 5+ EXTINCTIONS SURVIVED.</div>
+      </div>
+    </div>
+
+    <div id="lz-diag-grid" style="display:grid; grid-template-columns:repeat(4,1fr); gap:1px; margin-top:20px; background:rgba(126,240,178,.14); border:1px solid rgba(126,240,178,.14); border-radius:12px; overflow:hidden;">
+      <div style="background:#0a1015; padding:20px;">
+        <div style="font-size:9px; letter-spacing:.2em; color:#8a6258; margin-bottom:8px;">METABOLIC RATE — MAMMAL</div>
+        <div style="font-size:14px; color:#ff9a72;">HIGH — constant caloric input</div>
+      </div>
+      <div style="background:#0a1015; padding:20px;">
+        <div style="font-size:9px; letter-spacing:.2em; color:#8a6258; margin-bottom:8px;">SOCIAL TEMP SENSITIVITY — MAMMAL</div>
+        <div style="font-size:14px; color:#ff9a72;">EXTREME — 48h silence is lethal</div>
+      </div>
+      <div style="background:#0a1015; padding:20px;">
+        <div style="font-size:9px; letter-spacing:.2em; color:#4d7a68; margin-bottom:8px;">METABOLIC RATE — $LIZARD</div>
+        <div style="font-size:14px; color:#7ef0b2;">NEAR-ZERO — stillness costs nothing</div>
+      </div>
+      <div style="background:#0a1015; padding:20px;">
+        <div style="font-size:9px; letter-spacing:.2em; color:#4d7a68; margin-bottom:8px;">SOCIAL TEMP SENSITIVITY — $LIZARD</div>
+        <div style="font-size:14px; color:#7ef0b2;">NONE — silence is the natural state</div>
+      </div>
+    </div>
+  </section>
+
+  <section id="specimen" style="position:relative; z-index:2; max-width:1400px; margin:0 auto; padding:100px 48px 120px;">
+    <div style="display:flex; align-items:baseline; gap:16px; margin-bottom:14px;">
+      <span style="font-size:10px; letter-spacing:.24em; color:#6f8a83;">FIELD ANNEX</span>
+      <span style="flex:1; height:1px; background:rgba(126,240,178,.16);"></span>
+      <span style="font-size:10px; letter-spacing:.24em; color:#6f8a83;">AMBIENT TEMP 16°C</span>
+    </div>
+    <h2 style="font-family:Anton,sans-serif; font-size:clamp(42px,6vw,86px); line-height:.94; margin:0 0 48px; color:#eafff4;">SPECIMEN 001 — ANATOMICAL READOUT</h2>
+
+    <div id="lz-spec-grid" style="display:grid; grid-template-columns:1fr 1.15fr; gap:48px; align-items:center;">
+      <div style="position:relative; border:1px solid rgba(126,240,178,.18); border-radius:14px; overflow:hidden; background:#0a1218;">
+        <img src="img/pfp.jpg" alt="Specimen 001" style="display:block; width:100%; height:auto;" />
+        <div style="position:absolute; left:56%; top:13%; width:14px; height:14px; margin:-7px 0 0 -7px; border-radius:50%; border:1px solid #7ef0b2; background:rgba(126,240,178,.25); animation:lz-dot 2s ease-in-out infinite;"></div>
+        <div style="position:absolute; left:56%; top:13%; padding:3px 8px; transform:translate(18px,-50%); background:rgba(8,13,17,.85); border:1px solid rgba(126,240,178,.3); border-radius:4px; font-size:9px; letter-spacing:.14em; color:#7ef0b2; white-space:nowrap;">PARIETAL EYE</div>
+        <div style="position:absolute; left:70%; top:24%; width:14px; height:14px; margin:-7px 0 0 -7px; border-radius:50%; border:1px solid #5fd8ff; background:rgba(95,216,255,.25); animation:lz-dot 2s ease-in-out infinite; animation-delay:.4s;"></div>
+        <div style="position:absolute; left:70%; top:24%; padding:3px 8px; transform:translate(18px,-50%); background:rgba(8,13,17,.85); border:1px solid rgba(95,216,255,.3); border-radius:4px; font-size:9px; letter-spacing:.14em; color:#5fd8ff; white-space:nowrap;">RAZOR OPTICS</div>
+        <div style="position:absolute; left:27%; top:44%; width:14px; height:14px; margin:-7px 0 0 -7px; border-radius:50%; border:1px solid #7ef0b2; background:rgba(126,240,178,.25); animation:lz-dot 2s ease-in-out infinite; animation-delay:.8s;"></div>
+        <div style="position:absolute; left:27%; top:44%; padding:3px 8px; transform:translate(-100%,-50%) translateX(-12px); background:rgba(8,13,17,.85); border:1px solid rgba(126,240,178,.3); border-radius:4px; font-size:9px; letter-spacing:.14em; color:#7ef0b2; white-space:nowrap;">GREETING LIMB</div>
+        <div style="position:absolute; left:48%; top:74%; width:14px; height:14px; margin:-7px 0 0 -7px; border-radius:50%; border:1px solid #7ef0b2; background:rgba(126,240,178,.25); animation:lz-dot 2s ease-in-out infinite; animation-delay:1.2s;"></div>
+        <div style="position:absolute; left:48%; top:74%; padding:3px 8px; transform:translate(18px,-50%); background:rgba(8,13,17,.85); border:1px solid rgba(126,240,178,.3); border-radius:4px; font-size:9px; letter-spacing:.14em; color:#7ef0b2; white-space:nowrap;">COLD BLOOD CORE</div>
+        <div style="position:absolute; bottom:10px; left:12px; font-size:9px; letter-spacing:.16em; color:#6f8a83;">TAIL — OFF-FRAME. DETACHABLE. SEE: TAIL CUT</div>
+      </div>
+
+      <div>
+        <p style="font-size:15px; line-height:1.8; color:#93a8a3; margin:0 0 32px; text-wrap:pretty;">Lizards are the apex survivors of the organic record. Through at least five mass extinction events — including the one that terminated the dinosaurs — lizard lineages persisted. Not through aggression. Not through size. Not through hierarchy. Through structural efficiency and cold-blooded adaptability.</p>
+        <div id="lz-sheet-grid" style="display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:rgba(126,240,178,.13); border:1px solid rgba(126,240,178,.13); border-radius:12px; overflow:hidden;">
+          <div style="background:#0a1015; padding:18px;" style-hover="background:#0f1a20;"><div style="font-size:9px; letter-spacing:.2em; color:#6f8a83;">CLASS</div><div style="font-family:Anton,sans-serif; font-size:26px; color:#eafff4; margin-top:6px;">REPTILIA</div></div>
+          <div style="background:#0a1015; padding:18px;" style-hover="background:#0f1a20;"><div style="font-size:9px; letter-spacing:.2em; color:#6f8a83;">BLOOD</div><div style="font-family:Anton,sans-serif; font-size:26px; color:#5fd8ff; margin-top:6px;">COLD</div></div>
+          <div style="background:#0a1015; padding:18px;" style-hover="background:#0f1a20;"><div style="font-size:9px; letter-spacing:.2em; color:#6f8a83;">EXERTION</div><div style="font-family:Anton,sans-serif; font-size:26px; color:#eafff4; margin-top:6px;">ZERO</div></div>
+          <div style="background:#0a1015; padding:18px;" style-hover="background:#0f1a20;"><div style="font-size:9px; letter-spacing:.2em; color:#6f8a83;">ENDURANCE</div><div style="font-family:Anton,sans-serif; font-size:26px; color:#7ef0b2; margin-top:6px;">MAXIMUM</div></div>
+          <div style="background:#0a1015; padding:18px;" style-hover="background:#0f1a20;"><div style="font-size:9px; letter-spacing:.2em; color:#6f8a83;">OPTICS</div><div style="font-family:Anton,sans-serif; font-size:26px; color:#eafff4; margin-top:6px;">RAZOR</div></div>
+          <div style="background:#0a1015; padding:18px;" style-hover="background:#0f1a20;"><div style="font-size:9px; letter-spacing:.2em; color:#6f8a83;">TEMPERAMENT</div><div style="font-family:Anton,sans-serif; font-size:26px; color:#eafff4; margin-top:6px;">STILL</div></div>
+          <div style="background:#0a1015; padding:18px;" style-hover="background:#0f1a20;"><div style="font-size:9px; letter-spacing:.2em; color:#6f8a83;">EXTINCTIONS SURVIVED</div><div style="font-family:Anton,sans-serif; font-size:26px; color:#7ef0b2; margin-top:6px;">5+</div></div>
+          <div style="background:#0a1015; padding:18px;" style-hover="background:#0f1a20;"><div style="font-size:9px; letter-spacing:.2em; color:#6f8a83;">PANIC REFLEX</div><div style="font-family:Anton,sans-serif; font-size:26px; color:#eafff4; margin-top:6px;">NONE</div></div>
+          <div style="background:#0a1015; padding:18px;" style-hover="background:#0f1a20;"><div style="font-size:9px; letter-spacing:.2em; color:#6f8a83;">HABITAT</div><div style="font-family:Anton,sans-serif; font-size:26px; color:#ffab4d; margin-top:6px;">HEAT ROCK</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="rock" style="position:relative; z-index:2; padding:100px 48px 120px; background:linear-gradient(180deg, transparent, rgba(255,171,77,.045) 40%, transparent);">
+    <div style="max-width:1400px; margin:0 auto;">
+      <div style="display:flex; align-items:baseline; gap:16px; margin-bottom:14px;">
+        <span style="font-size:10px; letter-spacing:.24em; color:#6f8a83;">SIMULATOR / 01</span>
+        <span style="flex:1; height:1px; background:rgba(255,171,77,.2);"></span>
+        <span style="font-size:10px; letter-spacing:.24em; color:#ffab4d;">OCCUPANCY TEST // ONE ROCK</span>
+      </div>
+      <h2 style="font-family:Anton,sans-serif; font-size:clamp(42px,6vw,86px); line-height:.94; margin:0 0 12px; color:#eafff4;">HOLD THE ROCK</h2>
+      <p style="max-width:700px; font-size:14px; line-height:1.7; color:#7f958f; margin:0 0 44px;">One warm rock. One occupant. Everything wants it. Slide to dodge what drops from above, dig your claws in against what comes from the side — and never let go of the rock.</p>
+
+      <div style="max-width:980px; margin:0 auto;">
+        <div style="display:flex; justify-content:space-between; align-items:baseline; gap:12px; border-bottom:2px solid rgba(255,171,77,.6); padding:0 2px 6px; margin-bottom:8px; font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:#ffab4d;">
+          <b style="font-family:Anton,sans-serif; font-weight:400; font-size:15px; letter-spacing:.06em; color:#eafff4;">$LIZARD</b>
+          <span ref="{{ tickRef }}">basalt outcrop · one occupant · no vacancies</span>
+        </div>
+
+        <div id="lz-stage" style="position:relative; border:1px solid rgba(126,240,178,.16); border-radius:8px; overflow:hidden; background:#080d11; min-height:440px; display:flex; flex-direction:column; justify-content:center;">
+          <canvas ref="{{ canvasRef }}" width="900" height="560" style="display:block; width:100%; height:auto; touch-action:none;"></canvas>
+
+          <div style="position:absolute; inset:0; pointer-events:none; padding:16px; display:flex; flex-direction:column; gap:8px;">
+            <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:12px;">
+              <div style="font-family:Anton,sans-serif; font-size:clamp(26px,5.2vw,42px); line-height:.9; color:#eafff4; letter-spacing:.02em;">
+                <span ref="{{ scoreRef }}">0</span>
+                <small style="display:block; font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:.22em; color:#6f8a83; margin-top:6px;">$LIZARD HELD</small>
+              </div>
+              <div style="width:min(180px,38%);">
+                <div style="font-size:10px; letter-spacing:.2em; color:#6f8a83; margin-bottom:5px; text-align:right;">CLAW GRIP</div>
+                <div style="height:9px; background:rgba(255,255,255,.07); border:1.5px solid rgba(126,240,178,.35); position:relative; overflow:hidden;">
+                  <i ref="{{ fillRef }}" style="position:absolute; inset:0; transform-origin:left; background:#7ef0b2; transition:transform .08s linear;"></i>
+                </div>
+              </div>
+            </div>
+            <div ref="{{ alertRef }}" style="align-self:center; margin-top:2px; font-family:Anton,sans-serif; font-size:clamp(18px,3.6vw,28px); letter-spacing:.08em; color:#ff5a4d; opacity:0; transform:translateY(-6px); transition:opacity .12s, transform .12s;">FUD GUST</div>
+          </div>
+
+          <sc-if value="{{ menuOn }}" hint-placeholder-val="{{ true }}">
+            <div id="lz-menu-panel" style="position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:16px; background:rgba(8,13,17,.93); text-align:center; padding:24px; overflow:auto;">
+              <h3 style="font-family:Anton,sans-serif; font-size:clamp(40px,9vw,84px); line-height:.82; letter-spacing:.01em; margin:0; color:#eafff4;">HOLD<span style="display:block; color:#ffab4d;">THE ROCK</span></h3>
+              <p style="font-size:12px; line-height:1.9; letter-spacing:.04em; max-width:46ch; color:#93a8a3; margin:0;">$LIZARD owns one warm rock. Everything wants the rock. Slide to dodge what comes from above, dig claws in against what comes from the side. Let go of the rock and the rock is no longer the lizard's.</p>
+              <div style="display:flex; gap:8px; flex-wrap:wrap; justify-content:center; font-size:11px; letter-spacing:.1em; color:#7f958f;">
+                <span style="border:1.5px solid rgba(126,240,178,.3); padding:5px 9px;">◀ ▶ / A D — SLIDE</span>
+                <span style="border:1.5px solid rgba(126,240,178,.3); padding:5px 9px;">SPACE — DIG IN</span>
+              </div>
+              <button onClick="{{ onStart }}" style="pointer-events:auto; font-family:Anton,sans-serif; font-size:20px; letter-spacing:.1em; background:#7ef0b2; color:#05110b; border:none; padding:13px 30px; cursor:pointer; box-shadow:5px 5px 0 #1d5c46; transition:transform .07s, box-shadow .07s;" style-active="transform:translate(5px,5px); box-shadow:0 0 0 #1d5c46;">CLIMB ON</button>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ overOn }}" hint-placeholder-val="{{ false }}">
+            <div id="lz-over-panel" style="position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:14px; background:rgba(8,13,17,.93); text-align:center; padding:24px; overflow:auto;">
+              <div style="font-family:Anton,sans-serif; font-size:clamp(34px,8vw,64px); line-height:.9; color:#eafff4;">{{ finalScore }}<small style="display:block; font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:.2em; color:#6f8a83; margin-top:8px;">$LIZARD HELD BEFORE THE SLIP</small></div>
+              <div style="font-size:11px; letter-spacing:.16em; color:#7f958f;">LONGEST HOLD — {{ bestScore }}</div>
+              <div id="lz-ledger" style="width:min(320px,100%); flex:none; border:1px solid rgba(126,240,178,.18); border-radius:8px; overflow:hidden;">
+                <div style="display:flex; justify-content:space-between; padding:8px 12px; background:rgba(126,240,178,.07); font-size:9px; letter-spacing:.2em; color:#8fa8a1;"><span>ROCK LEDGER</span><span>TOP 5</span></div>
+                <sc-for list="{{ board }}" as="row" hint-placeholder-count="3">
+                  <div style="display:flex; align-items:baseline; gap:10px; padding:7px 12px; border-top:1px solid rgba(126,240,178,.09); background: {{ row.bg }};">
+                    <span style="font-family:Anton,sans-serif; font-size:14px; color:#4d7a68; width:22px;">{{ row.rank }}</span>
+                    <span style="flex:1; text-align:left; font-size:13px; color: {{ row.color }};">{{ row.score }}</span>
+                    <span style="font-size:9px; letter-spacing:.14em; color:#5d7570;">{{ row.when }}</span>
+                  </div>
+                </sc-for>
+              </div>
+              <p style="font-size:12px; line-height:1.9; letter-spacing:.04em; max-width:44ch; color:#93a8a3; margin:0;">Taken off the rock by: <span style="color:#ff8f6b;">{{ causeText }}</span>. The rock stays warm. It just is not the lizard's anymore.</p>
+              <button onClick="{{ onStart }}" style="pointer-events:auto; font-family:Anton,sans-serif; font-size:20px; letter-spacing:.1em; background:#ffab4d; color:#05110b; border:none; padding:13px 30px; cursor:pointer; box-shadow:5px 5px 0 #7a4a12; transition:transform .07s, box-shadow .07s;" style-active="transform:translate(5px,5px); box-shadow:0 0 0 #7a4a12;">CLIMB BACK</button>
+            </div>
+          </sc-if>
+        </div>
+
+        <div style="display:flex; gap:8px; margin-top:10px;">
+          <button onPointerDown="{{ leftDown }}" onPointerUp="{{ leftUp }}" onPointerLeave="{{ leftUp }}" onPointerCancel="{{ leftUp }}" style="flex:1; font-family:Anton,sans-serif; font-size:22px; letter-spacing:.08em; padding:16px 0; border:2px solid rgba(255,171,77,.45); background:#101820; color:#eafff4; cursor:pointer;" style-hover="border-color:#ffab4d;">◀</button>
+          <button onPointerDown="{{ gripDown }}" onPointerUp="{{ gripUp }}" onPointerLeave="{{ gripUp }}" onPointerCancel="{{ gripUp }}" style="flex:1.4; font-family:Anton,sans-serif; font-size:22px; letter-spacing:.08em; padding:16px 0; border:2px solid rgba(255,171,77,.45); background:#101820; color:#ffab4d; cursor:pointer;" style-hover="border-color:#ffab4d;">DIG IN</button>
+          <button onPointerDown="{{ rightDown }}" onPointerUp="{{ rightUp }}" onPointerLeave="{{ rightUp }}" onPointerCancel="{{ rightUp }}" style="flex:1; font-family:Anton,sans-serif; font-size:22px; letter-spacing:.08em; padding:16px 0; border:2px solid rgba(255,171,77,.45); background:#101820; color:#eafff4; cursor:pointer;" style-hover="border-color:#ffab4d;">▶</button>
+        </div>
+
+        <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:1px; margin-top:20px; background:rgba(126,240,178,.14); border:1px solid rgba(126,240,178,.14); border-radius:10px; overflow:hidden;">
+          <div style="background:#0a1015; padding:16px 18px;"><div style="font-size:9px; letter-spacing:.2em; color:#6f8a83;">LONGEST HOLD</div><div style="font-family:Anton,sans-serif; font-size:26px; color:#7ef0b2; margin-top:4px;">{{ bestScore }}</div></div>
+          <div style="background:#0a1015; padding:16px 18px;"><div style="font-size:9px; letter-spacing:.2em; color:#6f8a83;">SLIPS</div><div style="font-family:Anton,sans-serif; font-size:26px; color:#ff8f6b; margin-top:4px;">{{ slipsFmt }}</div></div>
+          <div style="background:#0a1015; padding:16px 18px;"><div style="font-size:9px; letter-spacing:.2em; color:#6f8a83;">AMBIENT TEMP</div><div style="font-family:Anton,sans-serif; font-size:26px; color: {{ ambientColor }}; margin-top:4px;">{{ ambientText }}</div></div>
+        </div>
+        <div style="margin-top:14px; font-size:11px; line-height:1.6; color:#5d7570;">This simulator awards no tokens, no allocation and no financial outcome. It awards stillness. Stillness is free.</div>
+      </div>
+    </div>
+  </section>
+
+  <section id="lexicon" style="position:relative; z-index:2; max-width:1400px; margin:0 auto; padding:60px 48px 120px;">
+    <div style="display:flex; align-items:baseline; gap:16px; margin-bottom:14px;">
+      <span style="font-size:10px; letter-spacing:.24em; color:#6f8a83;">SEC / 03</span>
+      <span style="flex:1; height:1px; background:rgba(126,240,178,.16);"></span>
+      <span style="font-size:10px; letter-spacing:.24em; color:#6f8a83;">HOVER TO DECODE — 12 ENTRIES</span>
+    </div>
+    <h2 style="font-family:Anton,sans-serif; font-size:clamp(42px,6vw,86px); line-height:.94; margin:0 0 12px; color:#eafff4;">THE LIZARDIAN LEXICON</h2>
+    <p style="max-width:720px; font-size:14px; line-height:1.7; color:#7f958f; margin:0 0 44px;">Biological translation layer. No inferior mammalian financial terminology is imported. Every market state mapped to lizard anatomy and physiology.</p>
+
+    <div id="lz-lex-grid" style="display:grid; grid-template-columns:repeat(3,1fr); gap:16px;">
+      <div style="border:1px solid rgba(126,240,178,.14); border-radius:12px; padding:22px; background:rgba(126,240,178,.025); transition:all .25s ease;" style-hover="border-color:#7ef0b2; background:rgba(126,240,178,.07); transform:translateY(-4px);">
+        <div style="display:flex; justify-content:space-between; align-items:baseline;"><span style="font-family:Anton,sans-serif; font-size:24px; color:#7ef0b2;">AMBIENT TEMP</span><span style="font-size:9px; color:#4d635e;">01</span></div>
+        <p style="font-size:13px; line-height:1.7; color:#a3b8b2; margin:12px 0 0; filter:blur(4.5px); opacity:.4; transition:all .3s ease;" style-hover="filter:blur(0); opacity:1;">Market conditions. The prevailing macro temperature of the ecosystem. Lizardians read the ambient temp before executing any movement.</p>
+      </div>
+      <div style="border:1px solid rgba(126,240,178,.14); border-radius:12px; padding:22px; background:rgba(126,240,178,.025); transition:all .25s ease;" style-hover="border-color:#7ef0b2; background:rgba(126,240,178,.07); transform:translateY(-4px);">
+        <div style="display:flex; justify-content:space-between; align-items:baseline;"><span style="font-family:Anton,sans-serif; font-size:24px; color:#ffab4d;">THE SUN</span><span style="font-size:9px; color:#4d635e;">02</span></div>
+        <p style="font-size:13px; line-height:1.7; color:#a3b8b2; margin:12px 0 0; filter:blur(4.5px); opacity:.4; transition:all .3s ease;" style-hover="filter:blur(0); opacity:1;">Liquidity. The primary energy source radiating into the ecosystem. $LIZARD absorbs it with maximum efficiency and patience when the sun is present.</p>
+      </div>
+      <div style="border:1px solid rgba(126,240,178,.14); border-radius:12px; padding:22px; background:rgba(126,240,178,.025); transition:all .25s ease;" style-hover="border-color:#7ef0b2; background:rgba(126,240,178,.07); transform:translateY(-4px);">
+        <div style="display:flex; justify-content:space-between; align-items:baseline;"><span style="font-family:Anton,sans-serif; font-size:24px; color:#ffab4d;">THE HEAT ROCK</span><span style="font-size:9px; color:#4d635e;">03</span></div>
+        <p style="font-size:13px; line-height:1.7; color:#a3b8b2; margin:12px 0 0; filter:blur(4.5px); opacity:.4; transition:all .3s ease;" style-hover="filter:blur(0); opacity:1;">The liquidity pool. Expands during high ambient temp, contracts when the sun recedes. Lizardians know the rock — secure it and max-bask.</p>
+      </div>
+      <div style="border:1px solid rgba(126,240,178,.14); border-radius:12px; padding:22px; background:rgba(126,240,178,.025); transition:all .25s ease;" style-hover="border-color:#7ef0b2; background:rgba(126,240,178,.07); transform:translateY(-4px);">
+        <div style="display:flex; justify-content:space-between; align-items:baseline;"><span style="font-family:Anton,sans-serif; font-size:24px; color:#7ef0b2;">BASKING</span><span style="font-size:9px; color:#4d635e;">04</span></div>
+        <p style="font-size:13px; line-height:1.7; color:#a3b8b2; margin:12px 0 0; filter:blur(4.5px); opacity:.4; transition:all .3s ease;" style-hover="filter:blur(0); opacity:1;">Holding during a pump. Sitting completely still on the heat rock, absorbing incoming liquidity with zero panic-sell reflex. No over-trading while the candle shoots.</p>
+      </div>
+      <div style="border:1px solid rgba(126,240,178,.14); border-radius:12px; padding:22px; background:rgba(126,240,178,.025); transition:all .25s ease;" style-hover="border-color:#7ef0b2; background:rgba(126,240,178,.07); transform:translateY(-4px);">
+        <div style="display:flex; justify-content:space-between; align-items:baseline;"><span style="font-family:Anton,sans-serif; font-size:24px; color:#5fd8ff;">COOLING</span><span style="font-size:9px; color:#4d635e;">05</span></div>
+        <p style="font-size:13px; line-height:1.7; color:#a3b8b2; margin:12px 0 0; filter:blur(4.5px); opacity:.4; transition:all .3s ease;" style-hover="filter:blur(0); opacity:1;">Macro market contraction. When ambient temp drops, lizardians cool. Capital is conserved. Positions held. The sun will return.</p>
+      </div>
+      <div style="border:1px solid rgba(126,240,178,.14); border-radius:12px; padding:22px; background:rgba(126,240,178,.025); transition:all .25s ease;" style-hover="border-color:#7ef0b2; background:rgba(126,240,178,.07); transform:translateY(-4px);">
+        <div style="display:flex; justify-content:space-between; align-items:baseline;"><span style="font-family:Anton,sans-serif; font-size:24px; color:#5fd8ff;">BRUMATION</span><span style="font-size:9px; color:#4d635e;">06</span></div>
+        <p style="font-size:13px; line-height:1.7; color:#a3b8b2; margin:12px 0 0; filter:blur(4.5px); opacity:.4; transition:all .3s ease;" style-hover="filter:blur(0); opacity:1;">Withstanding crypto winter. Reptilian metabolic preservation during extreme cold: when systemic liquidity evaporates, $LIZARD enters localized capital preservation and waits.</p>
+      </div>
+      <div style="border:1px solid rgba(126,240,178,.14); border-radius:12px; padding:22px; background:rgba(126,240,178,.025); transition:all .25s ease;" style-hover="border-color:#7ef0b2; background:rgba(126,240,178,.07); transform:translateY(-4px);">
+        <div style="display:flex; justify-content:space-between; align-items:baseline;"><span style="font-family:Anton,sans-serif; font-size:24px; color:#7ef0b2;">SHEDDING</span><span style="font-size:9px; color:#4d635e;">07</span></div>
+        <p style="font-size:13px; line-height:1.7; color:#a3b8b2; margin:12px 0 0; filter:blur(4.5px); opacity:.4; transition:all .3s ease;" style-hover="filter:blur(0); opacity:1;">Periodic expulsion of parasitic actors — jeeters, bots, high-frequency scalpers, MEV extractors. $LIZARD sheds its skin; the core emerges cleaner.</p>
+      </div>
+      <div style="border:1px solid rgba(126,240,178,.14); border-radius:12px; padding:22px; background:rgba(126,240,178,.025); transition:all .25s ease;" style-hover="border-color:#ff6b4d; background:rgba(255,107,77,.06); transform:translateY(-4px);">
+        <div style="display:flex; justify-content:space-between; align-items:baseline;"><span style="font-family:Anton,sans-serif; font-size:24px; color:#ff8f6b;">PARASITES</span><span style="font-size:9px; color:#4d635e;">08</span></div>
+        <p style="font-size:13px; line-height:1.7; color:#a3b8b2; margin:12px 0 0; filter:blur(4.5px); opacity:.4; transition:all .3s ease;" style-hover="filter:blur(0); opacity:1;">Short-term speculators, airdrop farmers, algorithmic MEV bots. They attach during the bask. They are removed via periodic shedding.</p>
+      </div>
+      <div style="border:1px solid rgba(126,240,178,.14); border-radius:12px; padding:22px; background:rgba(126,240,178,.025); transition:all .25s ease;" style-hover="border-color:#ff6b4d; background:rgba(255,107,77,.06); transform:translateY(-4px);">
+        <div style="display:flex; justify-content:space-between; align-items:baseline;"><span style="font-family:Anton,sans-serif; font-size:24px; color:#ff8f6b;">TAIL CUT</span><span style="font-size:9px; color:#4d635e;">09</span></div>
+        <p style="font-size:13px; line-height:1.7; color:#a3b8b2; margin:12px 0 0; filter:blur(4.5px); opacity:.4; transition:all .3s ease;" style-hover="filter:blur(0); opacity:1;">Defensive mechanism against coordinated FUD, exploits and whale dumps. The lizard detaches the tail; the attacker bleeds out pursuing it. Treasury and diamond holders remain completely still.</p>
+      </div>
+      <div style="border:1px solid rgba(126,240,178,.14); border-radius:12px; padding:22px; background:rgba(126,240,178,.025); transition:all .25s ease;" style-hover="border-color:#7ef0b2; background:rgba(126,240,178,.07); transform:translateY(-4px);">
+        <div style="display:flex; justify-content:space-between; align-items:baseline;"><span style="font-family:Anton,sans-serif; font-size:24px; color:#7ef0b2;">REGENERATION</span><span style="font-size:9px; color:#4d635e;">10</span></div>
+        <p style="font-size:13px; line-height:1.7; color:#a3b8b2; margin:12px 0 0; filter:blur(4.5px); opacity:.4; transition:all .3s ease;" style-hover="filter:blur(0); opacity:1;">Structural recovery after a Tail Cut. The tail rebuilds slowly, organically. Liquidity entering during Regeneration is structurally denser — less panic, more conviction.</p>
+      </div>
+      <div style="border:1px solid rgba(126,240,178,.14); border-radius:12px; padding:22px; background:rgba(126,240,178,.025); transition:all .25s ease;" style-hover="border-color:#c9a6ff; background:rgba(201,166,255,.06); transform:translateY(-4px);">
+        <div style="display:flex; justify-content:space-between; align-items:baseline;"><span style="font-family:Anton,sans-serif; font-size:24px; color:#c9a6ff;">THE THIRD EYE</span><span style="font-size:9px; color:#4d635e;">11</span></div>
+        <p style="font-size:13px; line-height:1.7; color:#a3b8b2; margin:12px 0 0; filter:blur(4.5px); opacity:.4; transition:all .3s ease;" style-hover="filter:blur(0); opacity:1;">PARIETAL EYE — a real optical organ on the dorsal skull of many lizard species. In $LIZARD lore: reading liquidity flows and structural signals invisible to emotional retail.</p>
+      </div>
+      <div style="border:1px solid rgba(126,240,178,.14); border-radius:12px; padding:22px; background:rgba(126,240,178,.025); transition:all .25s ease;" style-hover="border-color:#7ef0b2; background:rgba(126,240,178,.07); transform:translateY(-4px);">
+        <div style="display:flex; justify-content:space-between; align-items:baseline;"><span style="font-family:Anton,sans-serif; font-size:24px; color:#7ef0b2;">PARTHENOGENESIS</span><span style="font-size:9px; color:#4d635e;">12</span></div>
+        <p style="font-size:13px; line-height:1.7; color:#a3b8b2; margin:12px 0 0; filter:blur(4.5px); opacity:.4; transition:all .3s ease;" style-hover="filter:blur(0); opacity:1;">AUTOGENESIS — certain lizard species reproduce from a single individual, populating an island with zero external input. Every holder is an autonomous replication node.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="identity" style="position:relative; z-index:2; max-width:1400px; margin:0 auto; padding:60px 48px 120px;">
+    <div style="display:flex; align-items:baseline; gap:16px; margin-bottom:14px;">
+      <span style="font-size:10px; letter-spacing:.24em; color:#6f8a83;">SEC / 04</span>
+      <span style="flex:1; height:1px; background:rgba(126,240,178,.16);"></span>
+      <span style="font-size:10px; letter-spacing:.24em; color:#6f8a83;">AMBIENT TEMP 15°C</span>
+    </div>
+    <h2 style="font-family:Anton,sans-serif; font-size:clamp(42px,6vw,86px); line-height:.94; margin:0 0 12px; color:#eafff4;">CODE OF THE COLD</h2>
+    <p style="max-width:720px; font-size:14px; line-height:1.7; color:#7f958f; margin:0 0 44px;">Holders of $LIZARD are Lizardians. Not a community built on hype cycles or paid amplification — an operating system. A complete behavioral framework for navigating market cycles with cold-blooded structural logic.</p>
+
+    <div id="lz-code-grid" style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:64px;">
+      <div style="display:flex; gap:16px; align-items:center; padding:15px 18px; border:1px solid rgba(126,240,178,.1); border-radius:10px; transition:all .2s ease;" style-hover="border-color:#7ef0b2; background:rgba(126,240,178,.05); transform:translateX(6px);"><span style="font-family:Anton,sans-serif; font-size:20px; color:#3f5a54;">01</span><span style="font-size:14px; color:#c6dcd5;">Cold blood. Sharp. Still.</span></div>
+      <div style="display:flex; gap:16px; align-items:center; padding:15px 18px; border:1px solid rgba(126,240,178,.1); border-radius:10px; transition:all .2s ease;" style-hover="border-color:#7ef0b2; background:rgba(126,240,178,.05); transform:translateX(6px);"><span style="font-family:Anton,sans-serif; font-size:20px; color:#3f5a54;">02</span><span style="font-size:14px; color:#c6dcd5;">Executes hyper-adaptability.</span></div>
+      <div style="display:flex; gap:16px; align-items:center; padding:15px 18px; border:1px solid rgba(126,240,178,.1); border-radius:10px; transition:all .2s ease;" style-hover="border-color:#7ef0b2; background:rgba(126,240,178,.05); transform:translateX(6px);"><span style="font-family:Anton,sans-serif; font-size:20px; color:#3f5a54;">03</span><span style="font-size:14px; color:#c6dcd5;">Displays maximum endurance.</span></div>
+      <div style="display:flex; gap:16px; align-items:center; padding:15px 18px; border:1px solid rgba(126,240,178,.1); border-radius:10px; transition:all .2s ease;" style-hover="border-color:#7ef0b2; background:rgba(126,240,178,.05); transform:translateX(6px);"><span style="font-family:Anton,sans-serif; font-size:20px; color:#3f5a54;">04</span><span style="font-size:14px; color:#c6dcd5;">Holds without panic. Basks without over-trading.</span></div>
+      <div style="display:flex; gap:16px; align-items:center; padding:15px 18px; border:1px solid rgba(126,240,178,.1); border-radius:10px; transition:all .2s ease;" style-hover="border-color:#7ef0b2; background:rgba(126,240,178,.05); transform:translateX(6px);"><span style="font-family:Anton,sans-serif; font-size:20px; color:#3f5a54;">05</span><span style="font-size:14px; color:#c6dcd5;">Reads ambient temp before moving.</span></div>
+      <div style="display:flex; gap:16px; align-items:center; padding:15px 18px; border:1px solid rgba(126,240,178,.1); border-radius:10px; transition:all .2s ease;" style-hover="border-color:#7ef0b2; background:rgba(126,240,178,.05); transform:translateX(6px);"><span style="font-family:Anton,sans-serif; font-size:20px; color:#3f5a54;">06</span><span style="font-size:14px; color:#c6dcd5;">Cools when the market overheats.</span></div>
+      <div style="display:flex; gap:16px; align-items:center; padding:15px 18px; border:1px solid rgba(126,240,178,.1); border-radius:10px; transition:all .2s ease;" style-hover="border-color:#7ef0b2; background:rgba(126,240,178,.05); transform:translateX(6px);"><span style="font-family:Anton,sans-serif; font-size:20px; color:#3f5a54;">07</span><span style="font-size:14px; color:#c6dcd5;">Brumates with full capital intact.</span></div>
+      <div style="display:flex; gap:16px; align-items:center; padding:15px 18px; border:1px solid rgba(126,240,178,.1); border-radius:10px; transition:all .2s ease;" style-hover="border-color:#7ef0b2; background:rgba(126,240,178,.05); transform:translateX(6px);"><span style="font-family:Anton,sans-serif; font-size:20px; color:#3f5a54;">08</span><span style="font-size:14px; color:#c6dcd5;">Sees through noise with the Third Eye.</span></div>
+      <div style="display:flex; gap:16px; align-items:center; padding:15px 18px; border:1px solid rgba(126,240,178,.1); border-radius:10px; transition:all .2s ease;" style-hover="border-color:#7ef0b2; background:rgba(126,240,178,.05); transform:translateX(6px);"><span style="font-family:Anton,sans-serif; font-size:20px; color:#3f5a54;">09</span><span style="font-size:14px; color:#c6dcd5;">Executes tail cut without emotional attachment.</span></div>
+      <div style="display:flex; gap:16px; align-items:center; padding:15px 18px; border:1px solid rgba(126,240,178,.1); border-radius:10px; transition:all .2s ease;" style-hover="border-color:#7ef0b2; background:rgba(126,240,178,.05); transform:translateX(6px);"><span style="font-family:Anton,sans-serif; font-size:20px; color:#3f5a54;">10</span><span style="font-size:14px; color:#c6dcd5;">Spreads organically — autogenesis.</span></div>
+    </div>
+
+      </section>
+
+  <section id="supply" style="position:relative; z-index:2; max-width:1400px; margin:0 auto; padding:60px 48px 120px;">
+    <div style="display:flex; align-items:baseline; gap:16px; margin-bottom:14px;">
+      <span style="font-size:10px; letter-spacing:.24em; color:#6f8a83;">SEC / 05</span>
+      <span style="flex:1; height:1px; background:rgba(126,240,178,.16);"></span>
+      <span style="font-size:10px; letter-spacing:.24em; color:#6f8a83;">AMBIENT TEMP 37°C</span>
+    </div>
+    <h2 style="font-family:Anton,sans-serif; font-size:clamp(42px,6vw,86px); line-height:.94; margin:0 0 12px; color:#eafff4;">SUPPLY THERMODYNAMICS</h2>
+    <p style="max-width:760px; font-size:14px; line-height:1.7; color:#7f958f; margin:0 0 44px;">A cold-blooded organism carries no dead weight. No team allocation feeding on the treasury. No vesting cliffs waiting to shed heat onto holders. No tax skimming calories off every movement. The entire organism is in the wild.</p>
+
+    <div id="lz-supply-grid" style="display:grid; grid-template-columns:repeat(3,1fr); gap:16px;">
+      <div style="border:1px solid rgba(126,240,178,.16); border-radius:14px; padding:28px; background:rgba(126,240,178,.03); transition:all .25s ease;" style-hover="border-color:#7ef0b2; transform:translateY(-5px); background:rgba(126,240,178,.07);">
+        <div style="font-size:10px; letter-spacing:.2em; color:#6f8a83; margin-bottom:12px;">TOTAL SUPPLY</div>
+        <div style="font-family:Anton,sans-serif; font-size:clamp(30px,3.2vw,46px); line-height:1; color:#eafff4;">1,000,000,000</div>
+        <div style="font-size:12px; color:#7f958f; margin-top:10px;">$LIZARD — fixed. no mint.</div>
+      </div>
+      <div style="border:1px solid rgba(126,240,178,.16); border-radius:14px; padding:28px; background:rgba(126,240,178,.03); transition:all .25s ease;" style-hover="border-color:#7ef0b2; transform:translateY(-5px); background:rgba(126,240,178,.07);">
+        <div style="font-size:10px; letter-spacing:.2em; color:#6f8a83; margin-bottom:12px;">LAUNCH</div>
+        <div style="font-family:Anton,sans-serif; font-size:clamp(30px,3.2vw,46px); line-height:1; color:#7ef0b2;">100% FAIR</div>
+        <div style="font-size:12px; color:#7f958f; margin-top:10px;">bonk-native. no presale. no VC.</div>
+      </div>
+      <div style="border:1px solid rgba(126,240,178,.16); border-radius:14px; padding:28px; background:rgba(126,240,178,.03); transition:all .25s ease;" style-hover="border-color:#7ef0b2; transform:translateY(-5px); background:rgba(126,240,178,.07);">
+        <div style="font-size:10px; letter-spacing:.2em; color:#6f8a83; margin-bottom:12px;">TAX</div>
+        <div style="font-family:Anton,sans-serif; font-size:clamp(30px,3.2vw,46px); line-height:1; color:#eafff4;">0% / 0%</div>
+        <div style="font-size:12px; color:#7f958f; margin-top:10px;">buy / sell — zero caloric skim</div>
+      </div>
+      <div style="border:1px solid rgba(126,240,178,.16); border-radius:14px; padding:28px; background:rgba(126,240,178,.03); transition:all .25s ease;" style-hover="border-color:#ffab4d; transform:translateY(-5px); background:rgba(255,171,77,.07);">
+        <div style="font-size:10px; letter-spacing:.2em; color:#6f8a83; margin-bottom:12px;">LIQUIDITY</div>
+        <div style="font-family:Anton,sans-serif; font-size:clamp(30px,3.2vw,46px); line-height:1; color:#ffab4d;">BURNED</div>
+        <div style="font-size:12px; color:#7f958f; margin-top:10px;">the heat rock is permanent</div>
+      </div>
+      <div style="border:1px solid rgba(126,240,178,.16); border-radius:14px; padding:28px; background:rgba(126,240,178,.03); transition:all .25s ease;" style-hover="border-color:#7ef0b2; transform:translateY(-5px); background:rgba(126,240,178,.07);">
+        <div style="font-size:10px; letter-spacing:.2em; color:#6f8a83; margin-bottom:12px;">MINT AUTHORITY</div>
+        <div style="font-family:Anton,sans-serif; font-size:clamp(30px,3.2vw,46px); line-height:1; color:#eafff4;">REVOKED</div>
+        <div style="font-size:12px; color:#7f958f; margin-top:10px;">no new organisms</div>
+      </div>
+      <div style="border:1px solid rgba(126,240,178,.16); border-radius:14px; padding:28px; background:rgba(126,240,178,.03); transition:all .25s ease;" style-hover="border-color:#5fd8ff; transform:translateY(-5px); background:rgba(95,216,255,.07);">
+        <div style="font-size:10px; letter-spacing:.2em; color:#6f8a83; margin-bottom:12px;">FREEZE AUTHORITY</div>
+        <div style="font-family:Anton,sans-serif; font-size:clamp(30px,3.2vw,46px); line-height:1; color:#5fd8ff;">REVOKED</div>
+        <div style="font-size:12px; color:#7f958f; margin-top:10px;">no cage. cold and free.</div>
+      </div>
+    </div>
+    <div style="margin-top:20px; padding:22px 26px; border:1px dashed rgba(126,240,178,.2); border-radius:12px; font-size:14px; color:#93a8a3; line-height:1.7;">A hot-blooded token spends its treasury maintaining body temperature. $LIZARD spends nothing — stillness is free, and endurance compounds. <span style="color:#ffab4d;">Marketing budget of the ecosystem: the sun.</span></div>
+  </section>
+
+  <section id="molt" style="position:relative; z-index:2; max-width:1400px; margin:0 auto; padding:60px 48px 120px;">
+    <div style="display:flex; align-items:baseline; gap:16px; margin-bottom:14px;">
+      <span style="font-size:10px; letter-spacing:.24em; color:#6f8a83;">SEC / 06</span>
+      <span style="flex:1; height:1px; background:rgba(126,240,178,.16);"></span>
+      <span style="font-size:10px; letter-spacing:.24em; color:#6f8a83;">NO DATES. AMBIENT TEMP DECIDES.</span>
+    </div>
+    <h2 style="font-family:Anton,sans-serif; font-size:clamp(42px,6vw,86px); line-height:.94; margin:0 0 12px; color:#eafff4;">THE MOLT CYCLE</h2>
+    <p style="max-width:720px; font-size:14px; line-height:1.7; color:#7f958f; margin:0 0 44px;">A lizard does not follow a roadmap. It follows a molt cycle — growth phases separated by sheddings, each one leaving the organism larger and the skin cleaner. Reptiles do not perform for calendars.</p>
+
+    <div id="lz-molt-grid" style="display:grid; grid-template-columns:repeat(4,1fr); gap:16px;">
+      <div style="position:relative; border:1px solid rgba(126,240,178,.16); border-radius:14px; padding:26px; background:rgba(126,240,178,.03); overflow:hidden; transition:all .3s ease;" style-hover="border-color:#7ef0b2; background:rgba(126,240,178,.08); transform:translateY(-6px);">
+        <div style="font-family:Anton,sans-serif; font-size:66px; line-height:.9; color:rgba(126,240,178,.16);">01</div>
+        <div style="font-size:10px; letter-spacing:.22em; color:#7ef0b2; margin-top:10px;">PHASE 01</div>
+        <div style="font-family:Anton,sans-serif; font-size:32px; color:#eafff4; margin:4px 0 12px;">HATCH</div>
+        <p style="font-size:13px; line-height:1.7; color:#93a8a3; margin:0;">Stealth-adjacent fair launch on bonk. CA published. The Lizard Lounge opens on Telegram. First cohort of Lizardians steps onto the rock.</p>
+        <div style="margin-top:16px; font-size:10px; letter-spacing:.18em; color:#7ef0b2;">STATUS — COMPLETE</div>
+      </div>
+      <div style="position:relative; border:1px solid rgba(126,240,178,.16); border-radius:14px; padding:26px; background:rgba(126,240,178,.03); overflow:hidden; transition:all .3s ease;" style-hover="border-color:#7ef0b2; background:rgba(126,240,178,.08); transform:translateY(-6px);">
+        <div style="font-family:Anton,sans-serif; font-size:66px; line-height:.9; color:rgba(126,240,178,.16);">02</div>
+        <div style="font-size:10px; letter-spacing:.22em; color:#ffab4d; margin-top:10px;">PHASE 02</div>
+        <div style="font-family:Anton,sans-serif; font-size:32px; color:#eafff4; margin:4px 0 12px;">FIRST SHED</div>
+        <p style="font-size:13px; line-height:1.7; color:#93a8a3; margin:0;">The first shed. Parasites detach; jeeters exit pursuing warmer charts. Holder base densifies. Structural conviction replaces tourist liquidity.</p>
+        <div style="margin-top:16px; font-size:10px; letter-spacing:.18em; color:#ffab4d;">STATUS — IN PROGRESS</div>
+      </div>
+      <div style="position:relative; border:1px solid rgba(126,240,178,.16); border-radius:14px; padding:26px; background:rgba(126,240,178,.03); overflow:hidden; transition:all .3s ease;" style-hover="border-color:#7ef0b2; background:rgba(126,240,178,.08); transform:translateY(-6px);">
+        <div style="font-family:Anton,sans-serif; font-size:66px; line-height:.9; color:rgba(126,240,178,.16);">03</div>
+        <div style="font-size:10px; letter-spacing:.22em; color:#6f8a83; margin-top:10px;">PHASE 03</div>
+        <div style="font-family:Anton,sans-serif; font-size:32px; color:#eafff4; margin:4px 0 12px;">FIRST BASK</div>
+        <p style="font-size:13px; line-height:1.7; color:#93a8a3; margin:0;">Meme arsenal deployment. Autogenesis resumes — holders replicate the thesis across X, Telegram and Discord. Zero paid amplification. The lexicon spreads.</p>
+        <div style="margin-top:16px; font-size:10px; letter-spacing:.18em; color:#6f8a83;">STATUS — PENDING TEMP</div>
+      </div>
+      <div style="position:relative; border:1px solid rgba(126,240,178,.16); border-radius:14px; padding:26px; background:rgba(126,240,178,.03); overflow:hidden; transition:all .3s ease;" style-hover="border-color:#7ef0b2; background:rgba(126,240,178,.08); transform:translateY(-6px);">
+        <div style="font-family:Anton,sans-serif; font-size:66px; line-height:.9; color:rgba(126,240,178,.16);">04</div>
+        <div style="font-size:10px; letter-spacing:.22em; color:#6f8a83; margin-top:10px;">PHASE 04</div>
+        <div style="font-family:Anton,sans-serif; font-size:32px; color:#eafff4; margin:4px 0 12px;">APEX BASK</div>
+        <p style="font-size:13px; line-height:1.7; color:#93a8a3; margin:0;">Cold-blooded category dominance. CEX heat rocks as ambient temp permits. The Third Eye opens ecosystem-wide. The lizard remains.</p>
+        <div style="margin-top:16px; font-size:10px; letter-spacing:.18em; color:#6f8a83;">STATUS — PENDING TEMP</div>
+      </div>
+    </div>
+  </section>
+
+  <section id="why" style="position:relative; z-index:2; padding:120px 48px 100px; border-top:1px solid rgba(126,240,178,.12); background:radial-gradient(ellipse 70% 100% at 50% 100%, rgba(126,240,178,.08), transparent 70%);">
+    <div style="max-width:1000px; margin:0 auto; text-align:center;">
+      <img src="img/pfp.jpg" alt="$LIZARD" style="width:104px; height:104px; border-radius:24px; object-fit:cover; border:1px solid rgba(126,240,178,.3); animation:lz-float 5s ease-in-out infinite alternate;" />
+      <div style="font-size:10px; letter-spacing:.24em; color:#6f8a83; margin-top:26px;">SEC / 07 — WHY NOW</div>
+      <h2 style="font-family:Anton,sans-serif; font-size:clamp(40px,5.6vw,80px); line-height:.95; margin:14px 0 22px; color:#eafff4;">THE LAST ONE STANDING WHEN THE COOLING PHASE ENDS.</h2>
+      <p style="max-width:680px; margin:0 auto 40px; font-size:15px; line-height:1.8; color:#93a8a3; text-wrap:pretty;">The lizard did not survive five mass extinctions by being flashy.<br />It survived by being structurally correct.</p>
+      <div onClick="{{ onCopy }}" style="display:inline-flex; align-items:center; gap:14px; padding:15px 20px; border:1px solid rgba(126,240,178,.28); border-radius:10px; cursor:pointer; max-width:100%;" style-hover="border-color:#7ef0b2; background:rgba(126,240,178,.06);">
+        <span style="font-size:9px; letter-spacing:.2em; color:#6f8a83;">CA // SOLANA</span>
+        <span style="font-size:12px; color:#c6dcd5; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">{{ ca }}</span>
+        <span style="font-size:10px; font-weight:700; letter-spacing:.16em; color:#7ef0b2;">{{ copyLabel }}</span>
+      </div>
+      <div style="display:flex; gap:12px; justify-content:center; margin-top:22px; flex-wrap:wrap;">
+        <a href="https://t.me/thelizardloungebonk" target="_blank" rel="noreferrer" style="padding:14px 26px; border-radius:8px; background:#7ef0b2; color:#05110b; font-size:12px; font-weight:700; letter-spacing:.14em;" style-hover="background:#c9ffe2;">JOIN THE LIZARD LOUNGE</a>
+        <a href="https://x.com/lizardonbonk" target="_blank" rel="noreferrer" style="padding:14px 26px; border-radius:8px; border:1px solid rgba(126,240,178,.28); color:#d5e5e0; font-size:12px; font-weight:600; letter-spacing:.14em;" style-hover="border-color:#7ef0b2;">FOLLOW ON X</a>
+      </div>
+    </div>
+  </section>
+
+  <footer style="position:relative; z-index:2; border-top:1px solid rgba(126,240,178,.12); padding:34px 48px 80px;">
+    <div style="max-width:1400px; margin:0 auto; display:flex; justify-content:space-between; gap:24px; flex-wrap:wrap; align-items:center;">
+      <span style="font-family:Anton,sans-serif; font-size:20px; color:#eafff4;">$LIZARD // THE COLD-BLOODED MEMECOIN</span>
+      <span style="font-size:11px; letter-spacing:.16em; color:#5d7570;">lizardcoin.io // @lizardonbonk // t.me/thelizardloungebonk</span>
+    </div>
+    <p style="max-width:1400px; margin:18px auto 0; font-size:11px; line-height:1.7; color:#4d635e;">DISCLAIMER: $LIZARD is a meme coin with no intrinsic value, utility promise or expectation of financial return. Cold blood is a lifestyle, not investment advice. DYOR.</p>
+  </footer>
+
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;contractAddress&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;347k5f1WLRYe81roRcLBWDR6k3eCRunaqetQPW6pbonk&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Token&quot;},&quot;startTemp&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:7,&quot;min&quot;:4,&quot;max&quot;:40,&quot;unit&quot;:&quot;°C&quot;,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Simulator&quot;},&quot;threatRate&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:1,&quot;min&quot;:0,&quot;max&quot;:3,&quot;step&quot;:0.25,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Simulator&quot;},&quot;thermalLens&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Hero&quot;}}">
+const THREATS = [
+  { id: 'gust',  name: 'FUD GUST',       tel: 0.85 },
+  { id: 'wave',  name: 'WHALE WAVE',     tel: 0.75 },
+  { id: 'hawk',  name: 'PAPER HANDS',    tel: 0.90 },
+  { id: 'rival', name: 'COPYCAT LIZARD', tel: 0.95 },
+  { id: 'rug',   name: 'RUG PULL',       tel: 1.00 }
+];
+
+const MINT = '#7ef0b2';
+const AMBER = '#ffab4d';
+const RED = '#ff5a4d';
+const CYAN = '#5fd8ff';
+
+const C = {
+  mint: MINT, mintLt: '#a8f5cb', mintMid: '#4ec98d', mintDeep: '#2e8f74',
+  amber: AMBER, red: RED, cyan: CYAN, slate: '#33454f',
+  rock: '#141c23', rockTop: '#212d36', ink: '#05110b'
+};
+
+class Component extends DCLogic {
+  state = {
+    phase: 'menu', finalScore: 0, best: 0, slips: 0, cause: 'THE EDGE', board: [], lastId: 0,
+    copied: false, lensX: null, lensY: null,
+    fng: null, fngLabel: ''
+  };
+
+  KEY = { left: false, right: false, grip: false };
+  alertTimer = 0;
+  running = false;
+  last = 0;
+  raf = 0;
+
+  componentDidMount() {
+    try {
+      const b = Number(localStorage.getItem('lizard_rock_best'));
+      if (b > 0) this.setState({ best: b });
+      const raw = localStorage.getItem('lizard_rock_board');
+      if (raw) { const arr = JSON.parse(raw); if (Array.isArray(arr)) this.setState({ board: arr }); }
+    } catch (e) {}
+    this.loadFearGreed();
+    this.newGame();
+    if (this.cv) {
+      this.ctx = this.cv.getContext('2d');
+      this.draw();
+    }
+    this.onKey = (e) => {
+      const map = { ArrowLeft:'left', KeyA:'left', ArrowRight:'right', KeyD:'right', Space:'grip', ArrowDown:'grip', KeyS:'grip' };
+      const k = map[e.code];
+      if (k && this.running) { this.KEY[k] = (e.type === 'keydown'); e.preventDefault(); }
+      else if (k) { this.KEY[k] = (e.type === 'keydown'); }
+      if (e.type === 'keydown' && e.code === 'Enter' && !this.running) this.onStart();
+    };
+    window.addEventListener('keydown', this.onKey);
+    window.addEventListener('keyup', this.onKey);
+  }
+
+  componentWillUnmount() {
+    this.running = false;
+    cancelAnimationFrame(this.raf);
+    clearTimeout(this.copyTimer);
+    window.removeEventListener('keydown', this.onKey);
+    window.removeEventListener('keyup', this.onKey);
+  }
+
+  loadFearGreed() {
+    fetch('https://api.alternative.me/fng/?limit=1')
+      .then(r => r.json())
+      .then(j => {
+        const d = j && j.data && j.data[0];
+        if (!d) return;
+        const v = Number(d.value);
+        if (isNaN(v)) return;
+        this.setState({ fng: v, fngLabel: String(d.value_classification || '').toUpperCase() });
+      })
+      .catch(() => {});
+  }
+
+  floorFor(v) {
+    return 4 + (v / 100) * 30;
+  }
+
+  floorTemp() {
+    if (this.state.fng !== null) return this.floorFor(this.state.fng);
+    const start = Number(this.props.startTemp);
+    return isNaN(start) ? 7 : Math.max(4, start);
+  }
+
+  /* ---------- HOLD THE ROCK ---------- */
+  W = 900; H = 560; CX = 450; ROCK_TOP = 372; ROCK_HW = 232;
+
+  newGame() {
+    this.G = { t:0, score:0, p:0, v:0, grip:0, stam:1, lean:0, tilt:0, shake:0, combo:0,
+      ev:[], part:[], next:1.6, phase:'idle', fall:0, cause:'', flash:0 };
+  }
+
+  say(txt) {
+    if (!this.alertEl) return;
+    this.alertEl.textContent = txt;
+    this.alertEl.style.opacity = '1';
+    this.alertEl.style.transform = 'none';
+    this.alertTimer = 1.1;
+  }
+
+  spawn() {
+    const G = this.G, d = G.t;
+    const pool = d < 6 ? ['gust','wave'] : d < 14 ? ['gust','wave','hawk'] :
+                 d < 24 ? ['gust','wave','hawk','rival'] : ['gust','wave','hawk','rival','rug'];
+    const k = pool[Math.random() * pool.length | 0];
+    const meta = THREATS.find(t => t.id === k);
+    const dir = Math.random() < 0.5 ? -1 : 1;
+    const telScale = Math.max(0.5, 0.86 - G.t * 0.004);
+    G.ev.push({ k, dir, tel: meta.tel * telScale, t:0, fired:false, done:false,
+      target: Math.random() * 1.7 - 0.85, dur: k === 'gust' ? 1.5 : k === 'rug' ? 2.6 : 0.35, name: meta.name });
+    this.say(meta.name);
+    const rate = Number(this.props.threatRate);
+    const diff = isNaN(rate) ? 1 : Math.max(0.4, rate);
+    const ramp = Math.max(0.30, 1.45 - G.t * 0.026) / diff;
+    G.next = ramp * (0.7 + Math.random() * 0.5);
+  }
+
+  push(force, dodgeable) {
+    const G = this.G;
+    const soften = (G.grip > 0 && !dodgeable) ? 0.16 : (G.grip > 0 ? 1.35 : 1);
+    G.v += force * soften;
+    G.shake = Math.min(14, G.shake + Math.abs(force) * 26);
+  }
+
+  burst(x, y, n, col, spd) {
+    const G = this.G;
+    for (let i = 0; i < n; i++) {
+      const a = Math.random() * Math.PI * 2, s = spd * (0.3 + Math.random());
+      G.part.push({ x, y, vx: Math.cos(a) * s, vy: Math.sin(a) * s - 30, life: 0.6 + Math.random() * 0.5, col });
+    }
+  }
+
+  step(dt) {
+    const G = this.G, CX = this.CX, ROCK_HW = this.ROCK_HW, ROCK_TOP = this.ROCK_TOP;
+    G.t += dt; G.score += dt * 13 * (1 + G.combo * 0.05);
+    G.next -= dt; if (G.next <= 0) this.spawn();
+
+    const wantGrip = this.KEY.grip && G.stam > 0.04;
+    G.grip = wantGrip ? 1 : 0;
+    G.stam += (wantGrip ? -0.60 : 0.24) * dt;
+    G.stam = Math.max(0, Math.min(1, G.stam));
+
+    let acc = 0;
+    if (!G.grip) { if (this.KEY.left) acc -= 2.05; if (this.KEY.right) acc += 2.05; }
+    G.lean += ((this.KEY.left ? -1 : 0) + (this.KEY.right ? 1 : 0) - G.lean) * Math.min(1, dt * 9);
+
+    for (const e of G.ev) {
+      e.t += dt;
+      if (e.t < e.tel) continue;
+      const at = e.t - e.tel;
+      if (e.k === 'gust') { if (at < e.dur) acc += e.dir * (1.85 + G.t * 0.020) * (G.grip ? 0.16 : 1); else e.done = true; }
+      else if (e.k === 'rug') {
+        if (at < e.dur) { G.tilt += (e.dir * 0.38 - G.tilt) * Math.min(1, dt * 4); acc += e.dir * (1.5 + G.t * 0.016) * (G.grip ? 0.2 : 1); }
+        else e.done = true;
+      } else if (!e.fired) {
+        e.fired = true;
+        if (e.k === 'wave') { this.push(e.dir * (3.1 + G.t * 0.036), false); this.burst(CX + e.dir * ROCK_HW, ROCK_TOP + 18, 16, C.cyan, 210); G.combo++; }
+        else if (e.k === 'hawk') {
+          const hit = Math.abs(G.p - e.target) < 0.34;
+          this.burst(CX + e.target * ROCK_HW, ROCK_TOP - 4, hit ? 24 : 12, hit ? C.red : C.slate, 240);
+          if (hit) { this.push(Math.sign(G.p - e.target || 1) * (4.2 + G.t * 0.028), true); G.combo = 0; G.flash = 0.25; }
+          else G.combo += 2;
+        } else if (e.k === 'rival') {
+          const near = G.p * e.dir > 0.30;
+          this.push(-e.dir * ((near ? 4.0 : 2.1) + G.t * 0.026), false);
+          this.burst(CX + e.dir * ROCK_HW, ROCK_TOP - 6, 14, C.mint, 200);
+          if (near) G.combo = 0; else G.combo++;
+        }
+        e.done = true;
+      }
+    }
+    G.ev = G.ev.filter(e => !e.done || e.t < e.tel + e.dur + 0.2);
+    if (!G.ev.some(e => e.k === 'rug' && e.t > e.tel && e.t < e.tel + e.dur)) G.tilt += (0 - G.tilt) * Math.min(1, dt * 3);
+
+    G.v += acc * dt;
+    G.v *= Math.pow(G.grip ? 0.03 : 0.30, dt);
+    G.p += G.v * dt;
+    G.shake *= Math.pow(0.02, dt);
+    G.flash = Math.max(0, G.flash - dt);
+
+    if (Math.abs(G.p) > 1.0) {
+      G.phase = 'fall'; G.fall = 0;
+      const lastEv = [].concat(G.ev).reverse().find(e => e.fired || e.t > e.tel);
+      G.cause = lastEv ? lastEv.name : 'THE EDGE';
+      this.burst(CX + G.p * ROCK_HW, ROCK_TOP, 20, C.mintLt, 180);
+    }
+
+    for (const q of G.part) { q.x += q.vx * dt; q.y += q.vy * dt; q.vy += 520 * dt; q.life -= dt; }
+    G.part = G.part.filter(q => q.life > 0);
+
+    if (this.scoreEl) this.scoreEl.textContent = Math.floor(G.score).toLocaleString();
+    if (this.fillEl) {
+      this.fillEl.style.transform = 'scaleX(' + G.stam + ')';
+      this.fillEl.style.background = G.stam < 0.3 ? C.red : C.mint;
+    }
+  }
+
+  drawRock(ctx) {
+    const G = this.G, CX = this.CX, HW = this.ROCK_HW, T = this.ROCK_TOP, H = this.H;
+    ctx.save();
+    ctx.translate(CX, T); ctx.rotate(G.tilt * 0.12); ctx.translate(-CX, -T);
+    ctx.fillStyle = C.rock;
+    ctx.beginPath();
+    ctx.moveTo(CX - HW, T); ctx.lineTo(CX - HW + 16, T - 13);
+    ctx.lineTo(CX - 60, T - 19); ctx.lineTo(CX + 70, T - 16);
+    ctx.lineTo(CX + HW - 14, T - 10); ctx.lineTo(CX + HW, T);
+    ctx.lineTo(CX + HW - 40, H); ctx.lineTo(CX - HW + 34, H);
+    ctx.closePath(); ctx.fill();
+    ctx.fillStyle = C.rockTop;
+    ctx.beginPath();
+    ctx.moveTo(CX - HW + 16, T - 13); ctx.lineTo(CX - 60, T - 19);
+    ctx.lineTo(CX + 70, T - 16); ctx.lineTo(CX + HW - 14, T - 10);
+    ctx.lineTo(CX + HW, T); ctx.lineTo(CX - HW, T);
+    ctx.closePath(); ctx.fill();
+    ctx.strokeStyle = 'rgba(0,0,0,.5)'; ctx.lineWidth = 3;
+    for (let i = 0; i < 5; i++) { const x = CX - HW + 50 + i * 88; ctx.beginPath(); ctx.moveTo(x, T + 16); ctx.lineTo(x - 9, H); ctx.stroke(); }
+    ctx.strokeStyle = 'rgba(255,171,77,.22)'; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.moveTo(CX - HW, T); ctx.lineTo(CX + HW, T); ctx.stroke();
+    ctx.restore();
+  }
+
+  drawLizard(ctx) {
+    const G = this.G;
+    const x = this.CX + G.p * this.ROCK_HW, y = this.ROCK_TOP - 2;
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.rotate(G.tilt * 0.12 + G.lean * 0.10 + Math.max(-0.5, Math.min(0.5, G.v * 0.05)));
+    const g = G.grip;
+    ctx.fillStyle = 'rgba(0,0,0,.35)'; ctx.beginPath(); ctx.ellipse(0, 2, 34, 6, 0, 0, 7); ctx.fill();
+    ctx.strokeStyle = C.mintDeep; ctx.lineCap = 'round';
+    ctx.lineWidth = 9; ctx.beginPath(); ctx.moveTo(-14, -12);
+    ctx.quadraticCurveTo(-46, -10 - G.lean * 8, -64, -26 + G.lean * 10); ctx.stroke();
+    ctx.lineWidth = 6; ctx.strokeStyle = g ? C.mintLt : C.mintDeep;
+    const spread = g ? 11 : 6;
+    [[-12], [10]].forEach(a => {
+      const lx = a[0];
+      ctx.beginPath(); ctx.moveTo(lx, -9); ctx.lineTo(lx - spread, -1); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(lx + 4, -9); ctx.lineTo(lx + 4 + spread, -1); ctx.stroke();
+    });
+    ctx.fillStyle = C.mintMid; ctx.beginPath(); ctx.ellipse(-2, -16, 26, 13, 0, 0, 7); ctx.fill();
+    ctx.fillStyle = C.mintLt; ctx.beginPath(); ctx.ellipse(-2, -19, 20, 7, 0, 0, 7); ctx.fill();
+    ctx.fillStyle = C.mintMid; ctx.beginPath(); ctx.ellipse(26, -21, 14, 11, 0, 0, 7); ctx.fill();
+    ctx.fillStyle = C.ink; ctx.beginPath(); ctx.arc(31, -24, 3.1, 0, 7); ctx.fill();
+    ctx.fillStyle = C.mintDeep; ctx.beginPath(); ctx.ellipse(-2, -8, 16, 4, 0, 0, 7); ctx.fill();
+    if (g) {
+      ctx.strokeStyle = C.amber; ctx.lineWidth = 2.5;
+      for (let i = -1; i < 2; i += 1) { ctx.beginPath(); ctx.moveTo(i * 16 - 4, 4); ctx.lineTo(i * 16 - 9, 12); ctx.stroke(); }
+    }
+    ctx.restore();
+  }
+
+  drawThreats(ctx) {
+    const G = this.G, CX = this.CX, HW = this.ROCK_HW, T = this.ROCK_TOP;
+    for (const e of G.ev) {
+      const k = e.t / e.tel, tel = e.t < e.tel;
+      if (e.k === 'hawk') {
+        const tx = CX + e.target * HW;
+        if (tel) {
+          const r = 64 - 44 * k;
+          ctx.strokeStyle = 'rgba(255,90,77,' + (0.35 + 0.5 * k) + ')'; ctx.lineWidth = 4;
+          ctx.beginPath(); ctx.ellipse(tx, T - 2, r, r * 0.30, 0, 0, 7); ctx.stroke();
+          ctx.fillStyle = C.red;
+          const by = -60 + (T - 40) * k;
+          ctx.beginPath(); ctx.moveTo(tx, by); ctx.lineTo(tx - 46 + 34 * k, by - 16); ctx.lineTo(tx - 14, by + 7);
+          ctx.lineTo(tx + 14, by + 7); ctx.lineTo(tx + 46 - 34 * k, by - 16); ctx.closePath(); ctx.fill();
+        }
+      } else if (e.k === 'wave') {
+        const sx = CX + e.dir * (HW + 18);
+        if (tel) {
+          const rise = 86 * k;
+          const y = T + 54 - rise;
+          ctx.save();
+          ctx.translate(sx, y);
+          ctx.scale(-e.dir, 1);
+          ctx.fillStyle = C.cyan;
+          ctx.beginPath(); ctx.ellipse(0, 0, 40, 20, 0, 0, 7); ctx.fill();
+          ctx.beginPath();
+          ctx.moveTo(34, -2); ctx.quadraticCurveTo(56, -6, 66, -24);
+          ctx.lineTo(70, -20); ctx.quadraticCurveTo(64, 2, 70, 20);
+          ctx.lineTo(64, 22); ctx.quadraticCurveTo(50, 8, 34, 8);
+          ctx.closePath(); ctx.fill();
+          ctx.fillStyle = 'rgba(255,255,255,.22)';
+          ctx.beginPath(); ctx.ellipse(-6, 8, 30, 8, 0, 0, 7); ctx.fill();
+          ctx.fillStyle = C.ink;
+          ctx.beginPath(); ctx.arc(-26, -5, 3.2, 0, 7); ctx.fill();
+          ctx.strokeStyle = C.ink; ctx.lineWidth = 2;
+          ctx.beginPath(); ctx.moveTo(-38, 6); ctx.quadraticCurveTo(-20, 12, 4, 9); ctx.stroke();
+          ctx.strokeStyle = 'rgba(168,245,203,.9)'; ctx.lineWidth = 3; ctx.lineCap = 'round';
+          ctx.beginPath(); ctx.moveTo(-24, -18); ctx.quadraticCurveTo(-30, -34, -20, -44); ctx.stroke();
+          ctx.beginPath(); ctx.moveTo(-24, -18); ctx.quadraticCurveTo(-16, -32, -6, -38); ctx.stroke();
+          ctx.restore();
+        }
+      } else if (e.k === 'rival') {
+        const sx = CX + e.dir * (HW + 8);
+        if (tel) {
+          const h = 54 * k;
+          ctx.fillStyle = C.mintDeep;
+          ctx.beginPath(); ctx.ellipse(sx, T + 30 - h * 0.5, 26, h * 0.62, 0, 0, 7); ctx.fill();
+          ctx.fillStyle = C.ink; ctx.font = '500 12px "IBM Plex Mono",monospace';
+          ctx.textAlign = 'center'; ctx.fillText(e.dir < 0 ? '▶' : '◀', sx, T + 8);
+        }
+      } else if (e.k === 'gust' || e.k === 'rug') {
+        const active = e.t >= e.tel && e.t < e.tel + e.dur;
+        if (tel || active) {
+          const a = tel ? 0.25 + 0.55 * k : 0.75;
+          ctx.strokeStyle = (e.k === 'rug' ? 'rgba(255,90,77,' : 'rgba(126,240,178,') + a + ')';
+          ctx.lineWidth = e.k === 'rug' ? 5 : 3;
+          for (let i = 0; i < 5; i++) {
+            const yy = 150 + i * 44, ph = active ? (G.t * (e.k === 'rug' ? 5 : 9) + i) % 1 : k;
+            const x0 = CX + e.dir * (-260 + 520 * ph * 0.35 + i * 8);
+            ctx.beginPath(); ctx.moveTo(x0, yy); ctx.lineTo(x0 + e.dir * 70, yy); ctx.stroke();
+          }
+        }
+      }
+    }
+  }
+
+  draw() {
+    const ctx = this.ctx; if (!ctx) return;
+    const G = this.G, W = this.W, H = this.H;
+    ctx.save();
+    const sh = G.shake;
+    ctx.translate((Math.random() - 0.5) * sh, (Math.random() - 0.5) * sh);
+    const grad = ctx.createLinearGradient(0, 0, 0, H);
+    grad.addColorStop(0, '#0f1a22'); grad.addColorStop(0.62, '#0b131a'); grad.addColorStop(1, '#070c10');
+    ctx.fillStyle = grad; ctx.fillRect(-40, -40, W + 80, H + 80);
+    const sun = ctx.createRadialGradient(742, 104, 6, 742, 104, 120);
+    sun.addColorStop(0, 'rgba(255,214,140,.55)'); sun.addColorStop(0.4, 'rgba(255,171,77,.22)'); sun.addColorStop(1, 'rgba(255,171,77,0)');
+    ctx.fillStyle = sun; ctx.beginPath(); ctx.arc(742, 104, 120, 0, 7); ctx.fill();
+    ctx.strokeStyle = 'rgba(126,240,178,.07)'; ctx.lineWidth = 2;
+    for (let i = 0; i < 7; i++) { const y = 430 + i * 22; ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y + 6); ctx.stroke(); }
+    this.drawThreats(ctx); this.drawRock(ctx); this.drawLizard(ctx);
+    for (const q of G.part) { ctx.globalAlpha = Math.max(0, q.life); ctx.fillStyle = q.col; ctx.fillRect(q.x - 3, q.y - 3, 6, 6); }
+    ctx.globalAlpha = 1;
+    if (G.flash > 0) { ctx.fillStyle = 'rgba(255,90,77,' + G.flash * 0.5 + ')'; ctx.fillRect(-40, -40, W + 80, H + 80); }
+    ctx.restore();
+  }
+
+  fallFrame(dt) {
+    const G = this.G;
+    G.fall += dt;
+    G.p += Math.sign(G.p) * dt * 0.55;
+    this.draw();
+    const ctx = this.ctx;
+    ctx.fillStyle = 'rgba(8,13,17,' + Math.min(0.6, G.fall) + ')';
+    ctx.fillRect(0, 0, this.W, this.H);
+    if (G.fall > 0.85) this.gameOver();
+  }
+
+  loop = (ts) => {
+    if (!this.running) return;
+    const dt = Math.min(0.045, (ts - this.last) / 1000 || 0);
+    this.last = ts;
+    if (this.alertTimer > 0) {
+      this.alertTimer -= dt;
+      if (this.alertTimer <= 0 && this.alertEl) { this.alertEl.style.opacity = '0'; this.alertEl.style.transform = 'translateY(-6px)'; }
+    }
+    if (this.G.phase === 'play') { this.step(dt); if (this.G.phase === 'play') this.draw(); else this.fallFrame(dt); }
+    else this.fallFrame(dt);
+    this.raf = requestAnimationFrame(this.loop);
+  };
+
+  gameOver() {
+    this.running = false;
+    const sc = Math.floor(this.G.score);
+    const best = Math.max(this.state.best, sc);
+    if (best !== this.state.best) { try { localStorage.setItem('lizard_rock_best', String(best)); } catch (e) {} }
+    if (this.tickEl) this.tickEl.textContent = 'last holder cleared at ' + sc.toLocaleString() + ' · rock available';
+    const id = Date.now();
+    const d = new Date();
+    const entry = { s: sc, id, w: String(d.getDate()).padStart(2, '0') + ' ' + ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'][d.getMonth()] };
+    const board = this.state.board.concat([entry]).sort((a, b2) => b2.s - a.s).slice(0, 5);
+    try { localStorage.setItem('lizard_rock_board', JSON.stringify(board)); } catch (e) {}
+    this.setState(s => ({ phase: 'over', finalScore: sc, best, slips: s.slips + 1, cause: this.G.cause, board, lastId: id }));
+  }
+
+  onStart = () => {
+    this.newGame();
+    this.G.phase = 'play';
+    if (this.tickEl) this.tickEl.textContent = 'occupancy contested · claws down';
+    this.setState({ phase: 'play' });
+    this.running = true;
+    this.last = performance.now();
+    cancelAnimationFrame(this.raf);
+    this.raf = requestAnimationFrame(this.loop);
+  };
+
+  key(k, on) { this.KEY[k] = on; }
+  leftDown = (e) => { if (e && e.preventDefault) e.preventDefault(); this.key('left', true); };
+  leftUp = (e) => { if (e && e.preventDefault) e.preventDefault(); this.key('left', false); };
+  rightDown = (e) => { if (e && e.preventDefault) e.preventDefault(); this.key('right', true); };
+  rightUp = (e) => { if (e && e.preventDefault) e.preventDefault(); this.key('right', false); };
+  gripDown = (e) => { if (e && e.preventDefault) e.preventDefault(); this.key('grip', true); };
+  gripUp = (e) => { if (e && e.preventDefault) e.preventDefault(); this.key('grip', false); };
+
+  onCopy = () => {
+    const ca = this.props.contractAddress || '347k5f1WLRYe81roRcLBWDR6k3eCRunaqetQPW6pbonk';
+    try { navigator.clipboard.writeText(ca); } catch (e) {}
+    this.setState({ copied: true });
+    clearTimeout(this.copyTimer);
+    this.copyTimer = setTimeout(() => this.setState({ copied: false }), 1600);
+  };
+
+  onLens = (e) => {
+    if (this.props.thermalLens === false) return;
+    const el = this.lensEl;
+    if (!el) return;
+    const r = el.getBoundingClientRect();
+    this.setState({ lensX: e.clientX - r.left, lensY: e.clientY - r.top });
+  };
+
+  offLens = () => this.setState({ lensX: null, lensY: null });
+
+  renderVals() {
+    const s = this.state;
+    const amb = this.floorTemp();
+    const ambPct = Math.max(0, Math.min(100, ((amb - 4) / 38) * 100));
+    const v = s.fng === null ? null : s.fng;
+    let ambStatus = 'AMBIENT';
+    if (v === null) ambStatus = 'READING';
+    else if (v < 25) ambStatus = 'BRUMATION';
+    else if (v < 45) ambStatus = 'COOLING';
+    else if (v < 56) ambStatus = 'AMBIENT';
+    else if (v < 75) ambStatus = 'BASKING';
+    else ambStatus = 'MAX BASK';
+
+    const lensOn = s.lensX === null ? 0 : 1;
+    const surface = s.lensY === null ? this.floorTemp() : this.floorTemp() + (1 - Math.min(1, Math.max(0, s.lensY / 520))) * 14;
+
+    return {
+      ca: this.props.contractAddress || '347k5f1WLRYe81roRcLBWDR6k3eCRunaqetQPW6pbonk',
+      copyLabel: s.copied ? 'COPIED' : 'COPY',
+      onCopy: this.onCopy,
+
+      lensRef: (el) => { this.lensEl = el; },
+      onLens: this.onLens,
+      offLens: this.offLens,
+      lensOn,
+      lensPx: s.lensX === null ? -999 : s.lensX,
+      lensPy: s.lensY === null ? -999 : s.lensY,
+      lensClip: s.lensX === null ? 'circle(0px at 50% 50%)' : 'circle(110px at ' + s.lensX + 'px ' + s.lensY + 'px)',
+      surfaceTemp: surface.toFixed(1) + '°C',
+      surfaceColor: s.lensX === null ? '#7f958f' : AMBER,
+
+      canvasRef: (el) => { this.cv = el; if (el && !this.ctx) { this.ctx = el.getContext('2d'); if (this.G) this.draw(); } },
+      scoreRef: (el) => { this.scoreEl = el; },
+      fillRef: (el) => { this.fillEl = el; },
+      alertRef: (el) => { this.alertEl = el; },
+      tickRef: (el) => { this.tickEl = el; },
+
+      menuOn: s.phase === 'menu',
+      overOn: s.phase === 'over',
+      finalScore: s.finalScore.toLocaleString(),
+      bestScore: s.best.toLocaleString(),
+      slipsFmt: String(s.slips),
+      board: s.board.map((r, i) => ({
+        rank: String(i + 1).padStart(2, '0'),
+        score: r.s.toLocaleString(),
+        when: r.w,
+        color: r.id === s.lastId ? '#7ef0b2' : '#c6dcd5',
+        bg: r.id === s.lastId ? 'rgba(126,240,178,.09)' : 'transparent'
+      })),
+      causeText: s.cause,
+      onStart: this.onStart,
+      leftDown: this.leftDown, leftUp: this.leftUp,
+      rightDown: this.rightDown, rightUp: this.rightUp,
+      gripDown: this.gripDown, gripUp: this.gripUp,
+
+      ambientText: amb.toFixed(1) + '°C',
+      ambientColor: 'hsl(' + (196 - (ambPct / 100) * 178).toFixed(0) + ' 88% 64%)',
+      ambientPct: ambPct.toFixed(1),
+      ambientStatus: ambStatus
+    };
+  }
+}
+
+</script>
+</body>
+</html>

@@ -1,0 +1,411 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>HOLD THE ROCK</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --sand:#E9DCB8; --sand-hot:#F4EBD0; --basalt:#241F1A; --basalt-2:#3A322A;
+    --shadow:#2D3F8F; --jade:#3E9E68; --jade-lt:#79D49B; --chili:#E2542A; --gold:#F0B429;
+    --ink:#1A1612;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  html,body{height:100%}
+  body{
+    background:var(--basalt);
+    color:var(--ink);
+    font-family:"DM Mono",ui-monospace,monospace;
+    display:flex;align-items:center;justify-content:center;
+    padding:16px;overflow:hidden;
+  }
+  .cab{width:min(920px,100%);}
+  /* ticker */
+  .ticker{
+    display:flex;justify-content:space-between;align-items:baseline;gap:12px;
+    border-bottom:2px solid var(--gold);padding:0 2px 6px;margin-bottom:8px;
+    font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);
+  }
+  .ticker b{font-family:"Anton",sans-serif;letter-spacing:.06em;font-size:15px;font-weight:400;color:var(--sand)}
+  .stage{position:relative;border-radius:6px;overflow:hidden;background:var(--sand);}
+  canvas{display:block;width:100%;height:auto;touch-action:none}
+
+  /* HUD */
+  .hud{position:absolute;inset:0;pointer-events:none;padding:14px;display:flex;flex-direction:column;gap:8px}
+  .row{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+  .held{font-family:"Anton",sans-serif;font-size:clamp(26px,5.2vw,42px);line-height:.9;color:var(--ink);letter-spacing:.02em}
+  .held small{display:block;font-family:"DM Mono",monospace;font-size:10px;letter-spacing:.22em;color:#7a6b52;margin-top:5px}
+  .grip{width:min(180px,38%)}
+  .grip .lbl{font-size:10px;letter-spacing:.2em;color:#7a6b52;margin-bottom:4px;text-align:right}
+  .bar{height:9px;background:#0002;border:1.5px solid var(--basalt);position:relative;overflow:hidden}
+  .bar i{position:absolute;inset:0;transform-origin:left;background:var(--jade);transition:transform .08s linear}
+  .bar.low i{background:var(--chili)}
+  .alert{
+    align-self:center;margin-top:2px;font-family:"Anton",sans-serif;font-size:clamp(18px,3.6vw,28px);
+    letter-spacing:.08em;color:var(--chili);opacity:0;transform:translateY(-6px);
+    transition:opacity .12s,transform .12s;text-shadow:2px 2px 0 var(--sand-hot)
+  }
+  .alert.on{opacity:1;transform:none}
+
+  /* overlays */
+  .panel{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    gap:14px;background:rgba(233,220,184,.94);text-align:center;padding:24px}
+  .panel.hide{display:none}
+  .panel h1{font-family:"Anton",sans-serif;font-size:clamp(40px,10vw,88px);line-height:.82;letter-spacing:.01em}
+  .panel h1 em{font-style:normal;color:var(--chili);display:block}
+  .panel p{font-size:12px;line-height:1.9;letter-spacing:.04em;max-width:44ch;color:#4a3f30}
+  .keys{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;font-size:11px;letter-spacing:.1em}
+  .keys span{border:1.5px solid var(--basalt);padding:5px 9px}
+  button.go{
+    pointer-events:auto;font-family:"Anton",sans-serif;font-size:20px;letter-spacing:.1em;
+    background:var(--chili);color:var(--sand-hot);border:none;padding:13px 30px;cursor:pointer;
+    box-shadow:5px 5px 0 var(--basalt);transition:transform .07s,box-shadow .07s
+  }
+  button.go:active{transform:translate(5px,5px);box-shadow:0 0 0 var(--basalt)}
+  button.go:focus-visible{outline:3px solid var(--shadow);outline-offset:3px}
+  .final{font-family:"Anton",sans-serif;font-size:clamp(34px,8vw,64px);line-height:.9}
+  .final small{display:block;font-family:"DM Mono",monospace;font-size:11px;letter-spacing:.2em;color:#7a6b52;margin-top:8px}
+  .best{font-size:11px;letter-spacing:.16em;color:#7a6b52}
+
+  /* touch pad */
+  .pad{display:none;gap:8px;margin-top:8px}
+  .pad button{
+    flex:1;font-family:"Anton",sans-serif;font-size:22px;letter-spacing:.08em;padding:18px 0;
+    border:2px solid var(--gold);background:var(--basalt-2);color:var(--sand);cursor:pointer
+  }
+  .pad button.hot{background:var(--gold);color:var(--basalt)}
+  @media (pointer:coarse){.pad{display:flex}}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="cab">
+  <div class="ticker">
+    <b>$ROCK</b>
+    <span id="tick">basalt outcrop · one occupant · no vacancies</span>
+  </div>
+
+  <div class="stage">
+    <canvas id="cv" width="900" height="560"></canvas>
+
+    <div class="hud">
+      <div class="row">
+        <div class="held"><span id="score">0</span><small>$ROCK held</small></div>
+        <div class="grip">
+          <div class="lbl">claw grip</div>
+          <div class="bar" id="bar"><i id="barfill"></i></div>
+        </div>
+      </div>
+      <div class="alert" id="alert">FUD GUST</div>
+    </div>
+
+    <div class="panel" id="menu">
+      <h1>HOLD<em>THE ROCK</em></h1>
+      <p>A lizard owns one warm rock. Everything in this desert wants the rock. Slide to dodge what comes from above, dig claws in against what comes from the side. Let go of the stone and the stone is no longer the lizard's.</p>
+      <div class="keys"><span>◀ ▶ / A D — slide</span><span>SPACE — dig in</span></div>
+      <button class="go" id="start">CLIMB ON</button>
+    </div>
+
+    <div class="panel hide" id="over">
+      <div class="final"><span id="fscore">0</span><small>$ROCK held before the slip</small></div>
+      <div class="best" id="bestline">longest hold — 0</div>
+      <p id="cause">Swept off by the gust.</p>
+      <button class="go" id="again">CLIMB BACK</button>
+    </div>
+  </div>
+
+  <div class="pad">
+    <button id="bl">◀</button>
+    <button id="bg">DIG IN</button>
+    <button id="br">▶</button>
+  </div>
+</div>
+
+<script>
+const cv=document.getElementById('cv'),ctx=cv.getContext('2d');
+const W=900,H=560, CX=W/2, ROCK_TOP=372, ROCK_HW=232;
+
+const $=id=>document.getElementById(id);
+const el={score:$('score'),bar:$('bar'),fill:$('barfill'),alert:$('alert'),menu:$('menu'),
+  over:$('over'),f:$('fscore'),best:$('bestline'),cause:$('cause'),tick:$('tick')};
+
+let best=0;
+let S=null, running=false, last=0, alertTimer=0;
+
+const KEY={left:false,right:false,grip:false};
+const THREATS=[
+  {id:'gust', name:'FUD GUST',      tel:.85},
+  {id:'wave', name:'WHALE WAVE',    tel:.75},
+  {id:'hawk', name:'PAPER HANDS',   tel:.90},
+  {id:'rival',name:'COPYCAT LIZARD',tel:.95},
+  {id:'rug',  name:'RUG PULL',      tel:1.0}
+];
+
+function newGame(){
+  S={t:0,score:0,p:0,v:0,grip:0,stam:1,lean:0,tilt:0,shake:0,combo:0,
+     ev:[],part:[],next:1.6,phase:'play',fall:0,cause:'',flash:0};
+}
+
+function spawn(){
+  const d=S.t;
+  const pool = d<10 ? ['gust','wave'] : d<22 ? ['gust','wave','hawk'] :
+               d<38 ? ['gust','wave','hawk','rival'] : ['gust','wave','hawk','rival','rug'];
+  const k=pool[Math.random()*pool.length|0];
+  const meta=THREATS.find(t=>t.id===k);
+  const dir=Math.random()<.5?-1:1;
+  S.ev.push({k,dir,tel:meta.tel,t:0,fired:false,done:false,
+    target:(Math.random()*1.7-.85), dur:k==='gust'?1.5:k==='rug'?2.6:0.35, name:meta.name});
+  say(meta.name);
+  const ramp=Math.max(.55, 1.75 - S.t*0.016);
+  S.next = ramp*(0.75+Math.random()*0.55);
+}
+
+function say(txt){el.alert.textContent=txt;el.alert.classList.add('on');alertTimer=1.1;}
+
+function push(force,dodgeable){
+  const soften = (S.grip>0 && !dodgeable) ? 0.16 : (S.grip>0 ? 1.35 : 1);
+  S.v += force*soften;
+  S.shake = Math.min(14, S.shake + Math.abs(force)*26);
+}
+
+function burst(x,y,n,col,spd){
+  for(let i=0;i<n;i++){
+    const a=Math.random()*Math.PI*2, s=spd*(0.3+Math.random());
+    S.part.push({x,y,vx:Math.cos(a)*s,vy:Math.sin(a)*s-30,life:.6+Math.random()*.5,col});
+  }
+}
+
+function step(dt){
+  S.t+=dt; S.score += dt*13*(1+S.combo*0.05);
+  S.next-=dt; if(S.next<=0) spawn();
+
+  // grip / stamina
+  const wantGrip = KEY.grip && S.stam>0.04;
+  S.grip = wantGrip?1:0;
+  S.stam += (wantGrip? -0.44 : 0.32)*dt;
+  S.stam = Math.max(0,Math.min(1,S.stam));
+
+  // movement
+  let acc=0;
+  if(!S.grip){
+    if(KEY.left) acc-=2.05;
+    if(KEY.right) acc+=2.05;
+  }
+  S.lean += ((KEY.left?-1:0)+(KEY.right?1:0) - S.lean)*Math.min(1,dt*9);
+
+  // events
+  for(const e of S.ev){
+    e.t+=dt;
+    if(e.t<e.tel) continue;
+    const at=e.t-e.tel;
+    if(e.k==='gust'){ if(at<e.dur) acc += e.dir*(1.45+S.t*0.012)*(S.grip?0.14:1); else e.done=true; }
+    else if(e.k==='rug'){ if(at<e.dur){ S.tilt += (e.dir*0.30-S.tilt)*Math.min(1,dt*4); acc += e.dir*(1.15+S.t*0.01)*(S.grip?0.18:1);} else e.done=true; }
+    else if(!e.fired){
+      e.fired=true;
+      if(e.k==='wave'){ push(e.dir*(2.5+S.t*0.028), false); burst(CX+e.dir*ROCK_HW, ROCK_TOP+18, 16, '#2D3F8F', 210); S.combo++; }
+      else if(e.k==='hawk'){
+        const hit=Math.abs(S.p-e.target)<0.27;
+        burst(CX+e.target*ROCK_HW, ROCK_TOP-4, hit?24:12, hit?'#E2542A':'#241F1A', 240);
+        if(hit){ push(Math.sign(S.p-e.target||1)*(3.4+S.t*0.02), true); S.combo=0; S.flash=.25; }
+        else S.combo+=2;
+      }
+      else if(e.k==='rival'){
+        const near = S.p*e.dir > 0.30;
+        push(-e.dir*((near?3.3:1.7)+S.t*0.02), false);
+        burst(CX+e.dir*ROCK_HW, ROCK_TOP-6, 14, '#3E9E68', 200);
+        if(near) S.combo=0; else S.combo++;
+      }
+      e.done=true;
+    }
+  }
+  S.ev=S.ev.filter(e=>!e.done || e.t<e.tel+e.dur+0.2);
+  if(!S.ev.some(e=>e.k==='rug'&&e.t>e.tel&&e.t<e.tel+e.dur)) S.tilt += (0-S.tilt)*Math.min(1,dt*3);
+
+  // physics
+  S.v += acc*dt;
+  S.v *= Math.pow(S.grip?0.03:0.30, dt);
+  S.p += S.v*dt;
+  S.shake *= Math.pow(0.02,dt);
+  S.flash = Math.max(0,S.flash-dt);
+
+  if(Math.abs(S.p)>1.06){
+    S.phase='fall'; S.fall=0;
+    const lastEv=[...S.ev].reverse().find(e=>e.fired||e.t>e.tel);
+    S.cause = lastEv ? lastEv.name : 'THE EDGE';
+    burst(CX+S.p*ROCK_HW, ROCK_TOP, 20, '#79D49B', 180);
+  }
+
+  for(const q of S.part){ q.x+=q.vx*dt; q.y+=q.vy*dt; q.vy+=520*dt; q.life-=dt; }
+  S.part=S.part.filter(q=>q.life>0);
+
+  el.score.textContent=Math.floor(S.score).toLocaleString();
+  el.fill.style.transform='scaleX('+S.stam+')';
+  el.bar.classList.toggle('low',S.stam<0.3);
+}
+
+/* ---------- drawing ---------- */
+function rock(){
+  ctx.save();
+  ctx.translate(CX,ROCK_TOP); ctx.rotate(S.tilt*0.12); ctx.translate(-CX,-ROCK_TOP);
+  ctx.fillStyle='#241F1A';
+  ctx.beginPath();
+  ctx.moveTo(CX-ROCK_HW,ROCK_TOP);
+  ctx.lineTo(CX-ROCK_HW+16,ROCK_TOP-13);
+  ctx.lineTo(CX-60,ROCK_TOP-19); ctx.lineTo(CX+70,ROCK_TOP-16);
+  ctx.lineTo(CX+ROCK_HW-14,ROCK_TOP-10); ctx.lineTo(CX+ROCK_HW,ROCK_TOP);
+  ctx.lineTo(CX+ROCK_HW-40,H); ctx.lineTo(CX-ROCK_HW+34,H);
+  ctx.closePath(); ctx.fill();
+  ctx.fillStyle='#3A322A';
+  ctx.beginPath();
+  ctx.moveTo(CX-ROCK_HW+16,ROCK_TOP-13); ctx.lineTo(CX-60,ROCK_TOP-19);
+  ctx.lineTo(CX+70,ROCK_TOP-16); ctx.lineTo(CX+ROCK_HW-14,ROCK_TOP-10);
+  ctx.lineTo(CX+ROCK_HW,ROCK_TOP); ctx.lineTo(CX-ROCK_HW,ROCK_TOP);
+  ctx.closePath(); ctx.fill();
+  ctx.strokeStyle='#0003'; ctx.lineWidth=3;
+  for(let i=0;i<5;i++){ const x=CX-ROCK_HW+50+i*88;
+    ctx.beginPath(); ctx.moveTo(x,ROCK_TOP+16); ctx.lineTo(x-9,H); ctx.stroke(); }
+  ctx.restore();
+}
+
+function lizard(){
+  const x=CX+S.p*ROCK_HW, y=ROCK_TOP-2;
+  ctx.save();
+  ctx.translate(x,y); ctx.rotate(S.tilt*0.12 + S.lean*0.10 + Math.max(-.5,Math.min(.5,S.v*0.05)));
+  const g=S.grip;
+  ctx.fillStyle='#0002'; ctx.beginPath(); ctx.ellipse(0,2,34,6,0,0,7); ctx.fill();
+  // tail
+  ctx.strokeStyle='#3E9E68'; ctx.lineCap='round';
+  ctx.lineWidth=9; ctx.beginPath(); ctx.moveTo(-14,-12);
+  ctx.quadraticCurveTo(-46,-10-S.lean*8,-64,-26+S.lean*10); ctx.stroke();
+  // legs
+  ctx.lineWidth=6; ctx.strokeStyle=g?'#F0B429':'#2E7A4F';
+  const spread=g?11:6;
+  [[-12,1],[10,1]].forEach(([lx,s])=>{
+    ctx.beginPath(); ctx.moveTo(lx,-9); ctx.lineTo(lx-spread,-1); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(lx+4,-9); ctx.lineTo(lx+4+spread,-1); ctx.stroke();
+  });
+  // body + head
+  ctx.fillStyle='#4FAE75';
+  ctx.beginPath(); ctx.ellipse(-2,-16,26,13,0,0,7); ctx.fill();
+  ctx.fillStyle='#79D49B';
+  ctx.beginPath(); ctx.ellipse(-2,-19,20,7,0,0,7); ctx.fill();
+  ctx.fillStyle='#4FAE75';
+  ctx.beginPath(); ctx.ellipse(26,-21,14,11,0,0,7); ctx.fill();
+  ctx.fillStyle='#241F1A';
+  ctx.beginPath(); ctx.arc(31,-24,3.1,0,7); ctx.fill();
+  ctx.fillStyle='#E2542A';
+  ctx.beginPath(); ctx.ellipse(-2,-8,16,4,0,0,7); ctx.fill();
+  if(g){ ctx.strokeStyle='#F0B429'; ctx.lineWidth=2.5;
+    for(let i=-1;i<2;i+=1){ ctx.beginPath(); ctx.moveTo(i*16-4,-2); ctx.lineTo(i*16-9,7); ctx.stroke(); } }
+  ctx.restore();
+}
+
+function threats(){
+  for(const e of S.ev){
+    const k=e.t/e.tel, tel=e.t<e.tel;
+    if(e.k==='hawk'){
+      const tx=CX+e.target*ROCK_HW;
+      if(tel){
+        const r=64-44*k;
+        ctx.strokeStyle='rgba(45,63,143,'+(0.35+0.5*k)+')'; ctx.lineWidth=4;
+        ctx.beginPath(); ctx.ellipse(tx,ROCK_TOP-2,r,r*0.30,0,0,7); ctx.stroke();
+        ctx.fillStyle='#241F1A';
+        const by=-60+ (ROCK_TOP-40)*k;
+        ctx.beginPath(); ctx.moveTo(tx,by); ctx.lineTo(tx-46+34*k,by-16); ctx.lineTo(tx-14,by+7);
+        ctx.lineTo(tx+14,by+7); ctx.lineTo(tx+46-34*k,by-16); ctx.closePath(); ctx.fill();
+      }
+    }
+    else if(e.k==='wave'||e.k==='rival'){
+      const sx=CX+e.dir*(ROCK_HW+8);
+      if(tel){
+        const h=(e.k==='wave'?70:54)*k;
+        ctx.fillStyle=e.k==='wave'?'#2D3F8F':'#2E7A4F';
+        ctx.beginPath(); ctx.ellipse(sx,ROCK_TOP+30-h*0.5,26,h*0.62,0,0,7); ctx.fill();
+        ctx.fillStyle='#E9DCB8'; ctx.font='500 12px "DM Mono",monospace';
+        ctx.textAlign='center'; ctx.fillText(e.dir<0?'▶':'◀',sx,ROCK_TOP+8);
+      }
+    }
+    else if(e.k==='gust'||e.k==='rug'){
+      const active=e.t>=e.tel && e.t<e.tel+e.dur;
+      if(tel||active){
+        const a=tel?0.25+0.55*k:0.75;
+        ctx.strokeStyle=(e.k==='rug'?'rgba(226,84,42,':'rgba(36,31,26,')+a+')';
+        ctx.lineWidth=e.k==='rug'?5:3;
+        for(let i=0;i<5;i++){
+          const yy=150+i*44, ph=active?(S.t*(e.k==='rug'?5:9)+i)%1:k;
+          const x0=CX+e.dir*(-260+520*ph*0.35+i*8);
+          ctx.beginPath(); ctx.moveTo(x0,yy); ctx.lineTo(x0+e.dir*70,yy); ctx.stroke();
+        }
+      }
+    }
+  }
+}
+
+function draw(){
+  ctx.save();
+  const sh=S.shake;
+  ctx.translate((Math.random()-.5)*sh,(Math.random()-.5)*sh);
+  const grad=ctx.createLinearGradient(0,0,0,H);
+  grad.addColorStop(0,'#F4EBD0'); grad.addColorStop(.62,'#E9DCB8'); grad.addColorStop(1,'#D9C79B');
+  ctx.fillStyle=grad; ctx.fillRect(-40,-40,W+80,H+80);
+  ctx.fillStyle='#F0B42933';
+  ctx.beginPath(); ctx.arc(742,104,74,0,7); ctx.fill();
+  ctx.strokeStyle='#0000000f'; ctx.lineWidth=2;
+  for(let i=0;i<7;i++){ const y=430+i*22; ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(W,y+6); ctx.stroke(); }
+  threats(); rock(); lizard();
+  for(const q of S.part){ ctx.globalAlpha=Math.max(0,q.life); ctx.fillStyle=q.col;
+    ctx.fillRect(q.x-3,q.y-3,6,6); }
+  ctx.globalAlpha=1;
+  if(S.flash>0){ ctx.fillStyle='rgba(226,84,42,'+S.flash*0.5+')'; ctx.fillRect(-40,-40,W+80,H+80); }
+  ctx.restore();
+}
+
+function fall(dt){
+  S.fall+=dt;
+  S.p += Math.sign(S.p)*dt*0.55;
+  draw();
+  ctx.fillStyle='rgba(36,31,26,'+Math.min(.5,S.fall)+')'; ctx.fillRect(0,0,W,H);
+  if(S.fall>0.85) gameOver();
+}
+
+function loop(ts){
+  if(!running) return;
+  const dt=Math.min(0.045,(ts-last)/1000||0); last=ts;
+  if(alertTimer>0){alertTimer-=dt; if(alertTimer<=0) el.alert.classList.remove('on');}
+  if(S.phase==='play'){ step(dt); if(S.phase==='play') draw(); else fall(dt); }
+  else fall(dt);
+  requestAnimationFrame(loop);
+}
+
+function gameOver(){
+  running=false;
+  const sc=Math.floor(S.score);
+  best=Math.max(best,sc);
+  el.f.textContent=sc.toLocaleString();
+  el.best.textContent='longest hold — '+best.toLocaleString()+' $ROCK';
+  el.cause.textContent='Taken off the stone by: '+S.cause+'. The rock stays warm. It just is not the lizard\'s anymore.';
+  el.tick.textContent='last holder cleared at '+sc.toLocaleString()+' · rock available';
+  el.over.classList.remove('hide');
+}
+
+function begin(){
+  newGame(); el.menu.classList.add('hide'); el.over.classList.add('hide');
+  el.tick.textContent='occupancy contested · claws down';
+  running=true; last=performance.now(); requestAnimationFrame(loop);
+}
+$('start').onclick=begin; $('again').onclick=begin;
+
+/* input */
+const map={ArrowLeft:'left',KeyA:'left',ArrowRight:'right',KeyD:'right',Space:'grip',ArrowDown:'grip',KeyS:'grip'};
+addEventListener('keydown',e=>{ if(map[e.code]){KEY[map[e.code]]=true;e.preventDefault();}
+  if(e.code==='Enter'&&!running) begin(); });
+addEventListener('keyup',e=>{ if(map[e.code]){KEY[map[e.code]]=false;e.preventDefault();} });
+function hold(btn,k){
+  const on=e=>{e.preventDefault();KEY[k]=true;btn.classList.add('hot')};
+  const off=e=>{e.preventDefault();KEY[k]=false;btn.classList.remove('hot')};
+  btn.addEventListener('pointerdown',on); btn.addEventListener('pointerup',off);
+  btn.addEventListener('pointerleave',off); btn.addEventListener('pointercancel',off);
+}
+hold($('bl'),'left'); hold($('br'),'right'); hold($('bg'),'grip');
+
+newGame(); draw();
+</script>
